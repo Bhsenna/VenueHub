@@ -39,6 +39,10 @@ public class UserService {
         return userMapper.toDTO(user);
     }
 
+    public User findById(Long id) {
+        return userRepository.getReferenceById(id);
+    }
+
     public Page<UserResponseDTO> getAllUsers(Pageable paginacao) {
         return userRepository.findAllByAtivoTrue(paginacao)
                 .map(userMapper::toDTO);
