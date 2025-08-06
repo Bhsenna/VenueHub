@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import venue.hub.api.domain.entities.Address;
+import venue.hub.api.domain.entities.User;
 
 
 @Data
@@ -18,5 +19,6 @@ public class VenueResponseDTO {
     private String telefone;
     private double valor;
     private Address address;
+    private User user;
     private boolean ativo;
 }
