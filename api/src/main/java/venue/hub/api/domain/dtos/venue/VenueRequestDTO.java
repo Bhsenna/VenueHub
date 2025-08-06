@@ -5,7 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import venue.hub.api.domain.dtos.address.AddressRequestDTO;
-import venue.hub.api.domain.dtos.user.UserRequestDTO;
+import venue.hub.api.domain.dtos.venueadditional.VenueAdditionalRequestDTO;
+
+import java.util.List;
+
 
 @Data
 @AllArgsConstructor
@@ -20,4 +23,5 @@ public class VenueRequestDTO {
     private AddressRequestDTO address;
     private Long userId;
 
+    private List<VenueAdditionalRequestDTO> additionals;
 }
