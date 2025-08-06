@@ -32,7 +32,7 @@ public class VenueRequestDTO {
 
     @NotNull
     private AddressRequestDTO address;
-    private UserRequestDTO user;
+    private Long userId;
 
     @NotNull
     private Long userId;
