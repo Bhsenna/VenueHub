@@ -29,7 +29,7 @@ public class Proposal {
 
     private Double valor;
 
-    private Status status;
+    private Status status = Status.PENDENTE;
 
-    private LocalDateTime dataCriacao;
+    private LocalDateTime dataCriacao = LocalDateTime.now();
 }
