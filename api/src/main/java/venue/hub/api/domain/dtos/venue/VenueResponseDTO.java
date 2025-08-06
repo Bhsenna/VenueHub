@@ -19,6 +19,6 @@ public class VenueResponseDTO {
     private String telefone;
     private double valor;
     private Address address;
-    private User user;
+    private Long userId;
     private boolean ativo;
 }

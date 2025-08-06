@@ -18,6 +18,6 @@ public class VenueRequestDTO {
     private String telefone;
     private double valor;
     private AddressRequestDTO address;
-    private UserRequestDTO user;
+    private Long userId;
 
 }
