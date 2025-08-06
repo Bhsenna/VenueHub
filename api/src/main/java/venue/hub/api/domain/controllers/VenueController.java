@@ -7,14 +7,10 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
-import venue.hub.api.domain.dtos.page.PageResponse;
 import venue.hub.api.domain.dtos.venue.VenueRequestDTO;
 import venue.hub.api.domain.dtos.venue.VenueResponseDTO;
 import venue.hub.api.domain.dtos.venue.VenueUpdateDTO;
-<<<<<<< HEAD
 import venue.hub.api.domain.dtos.venueadditional.VenueAdditionalRequestDTO;
-=======
->>>>>>> b5e1c8f (criando endpoints atualizar e deletar Venue)
 import venue.hub.api.domain.services.VenueService;
 
 import java.util.List;
@@ -27,11 +23,7 @@ public class VenueController {
     private VenueService venueService;
 
     @PostMapping("/create")
-<<<<<<< HEAD
     public ResponseEntity<VenueResponseDTO> createVenue(@RequestBody @Valid VenueRequestDTO requestDTO, UriComponentsBuilder uriBuilder) {
-=======
-    public ResponseEntity<VenueResponseDTO> createVenue(@RequestBody @Valid VenueRequestDTO requestDTO, UriComponentsBuilder uriBuilder){
->>>>>>> b5e1c8f (criando endpoints atualizar e deletar Venue)
         var venue = venueService.createVenue(requestDTO);
         var uri = uriBuilder.path("/api/v1/venues/{id}").buildAndExpand(venue.getId()).toUri();
 
@@ -73,7 +65,6 @@ public class VenueController {
         return ResponseEntity.noContent().build();
     }
 
-<<<<<<< HEAD
     @PutMapping("/{venueId}/additionals")
     public ResponseEntity<VenueResponseDTO> updateVenueAdditionals(
             @PathVariable Long venueId,
@@ -91,8 +82,4 @@ public class VenueController {
         venueService.removeAdditionalFromVenue(venueId, additionalIds);
         return ResponseEntity.noContent().build();
     }
-=======
-
->>>>>>> b5e1c8f (criando endpoints atualizar e deletar Venue)
-
 }

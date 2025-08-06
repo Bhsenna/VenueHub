@@ -44,6 +44,9 @@ public class VenueService {
     @Autowired
     private VenueAdditionalRepository venueAdditionalRepository;
 
+    @Autowired
+    private AdditionalService addicionalService;
+
 
     @Transactional
     public VenueResponseDTO createVenue(VenueRequestDTO venueRequestDTO) {
@@ -73,7 +76,6 @@ public class VenueService {
 
     public VenueResponseDTO getVenueById(Long id) {
         var venue = findById(id);
-<<<<<<< HEAD
 
         return venueMapper.toDTO(venue);
     }
@@ -96,13 +98,8 @@ public class VenueService {
     public Venue findById(Long id) {
         return venueRepository.findById(id)
                 .orElseThrow(() -> new VenueNotFound(HttpStatus.NOT_FOUND, "Local não encontrado com o id: " + id));
-=======
->>>>>>> b5e1c8f (criando endpoints atualizar e deletar Venue)
-
-        return venueMapper.toDTO(venue);
     }
 
-<<<<<<< HEAD
     public VenueResponseDTO updateVenueAdditionals(Long venueId, List<VenueAdditionalRequestDTO> additionals) {
         Venue venue = findById(venueId);
 
@@ -140,26 +137,5 @@ public class VenueService {
         venueAdditionalRepository.deleteAll(toRemove);
         venue.getAdditionals().removeAll(toRemove);
     }
+
 }
-=======
-    public VenueResponseDTO updateVenue(Long id, VenueUpdateDTO updateDTO) {
-        var venue = findById(id);
-        venue.update(updateDTO);
-
-        addressRepository.save(venue.getAddress());
-
-        return venueMapper.toDTO(venue);
-    }
-
-    public void deleteVenue(Long id) {
-        Venue venue = findById(id);
-        venue.setAtivo(false);
-        venueRepository.save(venue);
-    }
-
-    public Venue findById(Long id) {
-        return venueRepository.findById(id)
-                .orElseThrow(() -> new VenueNotFound(HttpStatus.NOT_FOUND, "Local não encontrado com o id: " + id));
-    }
-}
->>>>>>> b5e1c8f (criando endpoints atualizar e deletar Venue)
