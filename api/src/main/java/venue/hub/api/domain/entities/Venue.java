@@ -3,11 +3,8 @@ package venue.hub.api.domain.entities;
 import jakarta.persistence.*;
 import lombok.*;
 import venue.hub.api.domain.dtos.venue.VenueUpdateDTO;
-<<<<<<< HEAD
 
 import java.util.List;
-=======
->>>>>>> b5e1c8f (criando endpoints atualizar e deletar Venue)
 
 @Table(name = "venues")
 @Entity(name = "Venue")
