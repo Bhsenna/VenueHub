@@ -3,6 +3,7 @@ package venue.hub.api.domain.dtos.venue;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import venue.hub.api.domain.dtos.address.AddressResponseDTO;
 import venue.hub.api.domain.entities.Address;
 import venue.hub.api.domain.entities.User;
 
@@ -18,7 +19,7 @@ public class VenueResponseDTO {
     private String descricao;
     private String telefone;
     private double valor;
-    private Address address;
+    private AddressResponseDTO address;
     private Long userId;
     private boolean ativo;
 }
