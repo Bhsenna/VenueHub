@@ -10,6 +10,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import venue.hub.api.domain.dtos.page.PageResponse;
 import venue.hub.api.domain.dtos.user.UserRequestDTO;
 import venue.hub.api.domain.dtos.user.UserResponseDTO;
+import venue.hub.api.domain.dtos.user.UserUpdateDTO;
 import venue.hub.api.domain.services.UserService;
 
 import java.util.List;
@@ -52,5 +53,20 @@ public class UserController {
     public ResponseEntity<UserResponseDTO> getUserById(@PathVariable Long id) {
         UserResponseDTO user = userService.getUserById(id);
         return ResponseEntity.ok(user);
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<UserResponseDTO> updateUser(
+            @PathVariable Long id,
+            @RequestBody @Valid UserUpdateDTO updateDTO
+    ) {
+        UserResponseDTO updatedUser = userService.updateUser(id, updateDTO);
+        return ResponseEntity.ok(updatedUser);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        userService.deleteUser(id);
+        return ResponseEntity.noContent().build();
     }
 }

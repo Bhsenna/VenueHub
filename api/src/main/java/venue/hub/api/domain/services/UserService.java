@@ -9,6 +9,7 @@ import venue.hub.api.domain.dtos.mapper.AddressMapper;
 import venue.hub.api.domain.dtos.mapper.UserMapper;
 import venue.hub.api.domain.dtos.user.UserRequestDTO;
 import venue.hub.api.domain.dtos.user.UserResponseDTO;
+import venue.hub.api.domain.dtos.user.UserUpdateDTO;
 import venue.hub.api.domain.entities.User;
 import venue.hub.api.domain.repositories.AddressRepository;
 import venue.hub.api.domain.repositories.UserRepository;
@@ -39,7 +40,7 @@ public class UserService {
     }
 
     public Page<UserResponseDTO> getAllUsers(Pageable paginacao) {
-        return userRepository.findAll(paginacao)
+        return userRepository.findAllByAtivoTrue(paginacao)
                 .map(userMapper::toDTO);
     }
 
@@ -47,5 +48,24 @@ public class UserService {
         var user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado com o id: " + id, HttpStatus.NOT_FOUND));
         return userMapper.toDTO(user);
+    }
+
+    public UserResponseDTO updateUser(Long id, UserUpdateDTO updateDTO) {
+        var user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado com o id: " + id, HttpStatus.NOT_FOUND));
+
+        user.update(updateDTO);
+
+        addressRepository.save(user.getAddress());
+        userRepository.save(user);
+
+        return userMapper.toDTO(user);
+    }
+
+    public void deleteUser(Long id) {
+        var user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado com o id: " + id, HttpStatus.NOT_FOUND));
+        user.delete();
+        userRepository.save(user);
     }
 }
