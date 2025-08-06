@@ -29,19 +29,13 @@ public class VenueService {
     @Autowired
     private AddressRepository addressRepository;
 
-    @Autowired
-    private UserRepository userRepository;
 
     @Transactional
     public VenueResponseDTO createVenue(VenueRequestDTO venueRequestDTO){
         Venue venue = venueMapper.toEntity(venueRequestDTO);
-        User user = userRepository.findById(venueRequestDTO.getUserId())
-                        .orElseThrow();
-
         addressRepository.save(venue.getAddress());
 
         venueRepository.save(venue);
-        venue.setUser(user);
 
         return venueMapper.toDTO(venue);
     }
