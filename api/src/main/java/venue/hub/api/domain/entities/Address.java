@@ -2,6 +2,7 @@ package venue.hub.api.domain.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import venue.hub.api.domain.dtos.address.AddressUpdateDTO;
 import venue.hub.api.domain.enums.Estado;
 
 @Table(name = "addresses")
@@ -26,4 +27,24 @@ public class Address {
     private Double latitude;
     private Double longitude;
 
+    public void update(AddressUpdateDTO address) {
+        if (address.getCep() != null && !address.getCep().isBlank()) {
+            this.cep = address.getCep();
+        }
+        if (address.getLogradouro() != null && !address.getLogradouro().isBlank()) {
+            this.logradouro = address.getLogradouro();
+        }
+        if (address.getNumero() > 0) {
+            this.numero = address.getNumero();
+        }
+        if (address.getBairro() != null && !address.getBairro().isBlank()) {
+            this.bairro = address.getBairro();
+        }
+        if (address.getCidade() != null && !address.getCidade().isBlank()) {
+            this.cidade = address.getCidade();
+        }
+        if (address.getEstado() != null) {
+            this.estado = address.getEstado();
+        }
+    }
 }

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import venue.hub.api.domain.dtos.user.UserUpdateDTO;
 import venue.hub.api.domain.enums.UserRole;
 
 import java.util.Collection;
@@ -42,6 +43,22 @@ public class User implements UserDetails {
         this.login = login;
         this.senha = senha;
         this.address = address;
+    }
+
+    public void delete() {
+        this.ativo = false;
+    }
+
+    public void update(UserUpdateDTO updateDTO) {
+        if (updateDTO.getNome() != null && !updateDTO.getNome().isBlank()) {
+            this.nome = updateDTO.getNome();
+        }
+        if (updateDTO.getSobrenome() != null && !updateDTO.getSobrenome().isBlank()) {
+            this.sobrenome = updateDTO.getSobrenome();
+        }
+        if (updateDTO.getAddress() != null) {
+            this.address.update(updateDTO.getAddress());
+        }
     }
 
     @Override
