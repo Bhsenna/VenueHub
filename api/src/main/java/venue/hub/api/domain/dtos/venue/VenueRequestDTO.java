@@ -1,9 +1,6 @@
 package venue.hub.api.domain.dtos.venue;
 
-<<<<<<< HEAD
-=======
 
->>>>>>> b5e1c8f (criando endpoints atualizar e deletar Venue)
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
@@ -11,12 +8,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import venue.hub.api.domain.dtos.address.AddressRequestDTO;
-<<<<<<< HEAD
 import venue.hub.api.domain.dtos.venueadditional.VenueAdditionalRequestDTO;
 
 import java.util.List;
-=======
->>>>>>> b5e1c8f (criando endpoints atualizar e deletar Venue)
 
 @Data
 @AllArgsConstructor
