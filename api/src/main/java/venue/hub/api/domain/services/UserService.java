@@ -1,14 +1,19 @@
 package venue.hub.api.domain.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import venue.hub.api.domain.dtos.mapper.AddressMapper;
 import venue.hub.api.domain.dtos.mapper.UserMapper;
 import venue.hub.api.domain.dtos.user.UserRequestDTO;
 import venue.hub.api.domain.dtos.user.UserResponseDTO;
+import venue.hub.api.domain.dtos.user.UserUpdateDTO;
 import venue.hub.api.domain.entities.User;
 import venue.hub.api.domain.repositories.AddressRepository;
 import venue.hub.api.domain.repositories.UserRepository;
+import venue.hub.api.infra.exceptions.UserNotFoundException;
 
 @Service
 public class UserService {
@@ -26,12 +31,41 @@ public class UserService {
     AddressMapper addressMapper;
 
     public UserResponseDTO createUser(UserRequestDTO requestDTO) {
-        //Address address = addressMapper.toEntity(requestDTO.getAddress());
         User user = userMapper.toEntity(requestDTO);
 
         addressRepository.save(user.getAddress());
         userRepository.save(user);
 
         return userMapper.toDTO(user);
+    }
+
+    public Page<UserResponseDTO> getAllUsers(Pageable paginacao) {
+        return userRepository.findAllByAtivoTrue(paginacao)
+                .map(userMapper::toDTO);
+    }
+
+    public UserResponseDTO getUserById(Long id) {
+        var user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado com o id: " + id, HttpStatus.NOT_FOUND));
+        return userMapper.toDTO(user);
+    }
+
+    public UserResponseDTO updateUser(Long id, UserUpdateDTO updateDTO) {
+        var user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado com o id: " + id, HttpStatus.NOT_FOUND));
+
+        user.update(updateDTO);
+
+        addressRepository.save(user.getAddress());
+        userRepository.save(user);
+
+        return userMapper.toDTO(user);
+    }
+
+    public void deleteUser(Long id) {
+        var user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado com o id: " + id, HttpStatus.NOT_FOUND));
+        user.delete();
+        userRepository.save(user);
     }
 }
