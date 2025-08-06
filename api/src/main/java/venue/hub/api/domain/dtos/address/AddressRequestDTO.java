@@ -20,10 +20,6 @@ public class AddressRequestDTO {
     private String logradouro;
     @NotNull @Positive
     private Integer numero;
-<<<<<<< HEAD
-=======
-    @NotBlank
->>>>>>> a0a41fd (Adicionando validações para User e Address RequestDTO)
     private String complemento;
     @NotBlank
     private String bairro;
