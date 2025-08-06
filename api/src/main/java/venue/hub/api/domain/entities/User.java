@@ -26,13 +26,22 @@ public class User implements UserDetails {
     private String sobrenome;
     private String login;
     private String senha;
-    private UserRole role;
+    private UserRole role = UserRole.CLIENT;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "address_id", nullable = false)
     private Address address;
 
     private boolean ativo = true;
+
+    public User(String nome, String sobrenome, String login, String senha, UserRole role, Address address) {
+        this.nome = nome;
+        this.sobrenome = sobrenome;
+        this.login = login;
+        this.senha = senha;
+        this.role = UserRole.CLIENT;
+        this.address = address;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

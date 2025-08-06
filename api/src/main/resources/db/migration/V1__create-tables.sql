@@ -1,7 +1,7 @@
 CREATE TABLE addresses (
     id SERIAL PRIMARY KEY,
 
-    cep NUMERIC(8) NOT NULL,
+    cep CHAR(8) NOT NULL,
     logradouro VARCHAR(255) NOT NULL,
     numero INTEGER NOT NULL,
     complemento VARCHAR(255),
