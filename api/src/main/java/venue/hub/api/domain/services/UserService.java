@@ -45,14 +45,12 @@ public class UserService {
     }
 
     public UserResponseDTO getUserById(Long id) {
-        var user = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado com o id: " + id, HttpStatus.NOT_FOUND));
+        var user = this.findById(id);
         return userMapper.toDTO(user);
     }
 
     public UserResponseDTO updateUser(Long id, UserUpdateDTO updateDTO) {
-        var user = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado com o id: " + id, HttpStatus.NOT_FOUND));
+        var user = this.findById(id);
 
         user.update(updateDTO);
 
@@ -63,13 +61,13 @@ public class UserService {
     }
 
     public void deleteUser(Long id) {
-        var user = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado com o id: " + id, HttpStatus.NOT_FOUND));
+        var user = this.findById(id);
         user.delete();
         userRepository.save(user);
     }
 
     public User findById(Long id) {
-        return userRepository.getReferenceById(id);
+        return userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado com o id: " + id, HttpStatus.NOT_FOUND));
     }
 }

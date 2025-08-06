@@ -1,7 +1,5 @@
 package venue.hub.api.domain.dtos.event;
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,22 +11,13 @@ import java.time.LocalTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class EventRequestDTO {
-    @NotNull
+public class EventUpdateDTO {
+
     private TipoEvento tipoEvento;
-    @NotNull
-    @Positive
     private Integer qtPessoas;
-    @NotNull
     private LocalDate dataInicio;
-    @NotNull
     private LocalDate dataFim;
-    @NotNull
     private LocalTime horaInicio;
-    @NotNull
     private LocalTime horaFim;
 
-    @NotNull
-    @Positive
-    private Long userId;
 }
