@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import venue.hub.api.domain.dtos.address.AddressRequestDTO;
+import venue.hub.api.domain.dtos.user.UserRequestDTO;
 
 @Data
 @AllArgsConstructor
@@ -31,6 +32,7 @@ public class VenueRequestDTO {
 
     @NotNull
     private AddressRequestDTO address;
+    private UserRequestDTO user;
 
     @NotNull
     private Long userId;
