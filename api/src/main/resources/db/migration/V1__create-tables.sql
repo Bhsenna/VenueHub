@@ -44,10 +44,10 @@ CREATE TABLE events (
 
     tipo_evento VARCHAR(50) NOT NULL,
     qt_pessoas INTEGER NOT NULL,
-    dataInicio DATE NOT NULL,
-    dataFim DATE NOT NULL,
-    horaInicio TIME NOT NULL,
-    horaFim TIME NOT NULL,
+    data_inicio DATE NOT NULL,
+    data_fim DATE NOT NULL,
+    hora_inicio TIME NOT NULL,
+    hora_fim TIME NOT NULL,
 
     user_id INTEGER NOT NULL REFERENCES users(id)
 );
