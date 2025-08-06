@@ -15,6 +15,9 @@ import venue.hub.api.domain.repositories.AddressRepository;
 import venue.hub.api.domain.repositories.UserRepository;
 import venue.hub.api.infra.exceptions.UserNotFoundException;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class UserService {
 
@@ -37,6 +40,12 @@ public class UserService {
         userRepository.save(user);
 
         return userMapper.toDTO(user);
+    }
+
+    public List<UserResponseDTO> getAllUsers() {
+        return userRepository.findAll().stream()
+                .map(userMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
     public User findById(Long id) {
