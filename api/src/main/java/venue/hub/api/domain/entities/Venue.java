@@ -26,5 +26,9 @@ public class Venue {
     @JoinColumn(name = "address_id", nullable = false)
     private Address address;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
     private boolean ativo = true;
 }

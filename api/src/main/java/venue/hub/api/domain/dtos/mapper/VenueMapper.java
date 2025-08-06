@@ -5,7 +5,7 @@ import venue.hub.api.domain.dtos.venue.VenueRequestDTO;
 import venue.hub.api.domain.dtos.venue.VenueResponseDTO;
 import venue.hub.api.domain.entities.Venue;
 
-@Mapper(componentModel = "spring", uses = {AddressMapper.class})
+@Mapper(componentModel = "spring", uses = {AddressMapper.class, UserMapper.class})
 public interface VenueMapper {
 
     VenueResponseDTO toDTO(Venue venue);
