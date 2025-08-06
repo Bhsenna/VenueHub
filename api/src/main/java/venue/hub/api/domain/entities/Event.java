@@ -21,18 +21,20 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Enumerated(EnumType.STRING)
     private TipoEvento tipoEvento;
+
     private int qtPessoas;
     private LocalDate dataInicio;
     private LocalDate dataFim;
     private LocalTime horaInicio;
     private LocalTime horaFim;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "event_additionals",
             joinColumns = @JoinColumn(name = "event_id"),

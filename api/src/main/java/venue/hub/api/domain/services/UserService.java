@@ -34,4 +34,8 @@ public class UserService {
 
         return userMapper.toDTO(user);
     }
+
+    public User findById(Long id) {
+        return userRepository.getReferenceById(id);
+    }
 }
