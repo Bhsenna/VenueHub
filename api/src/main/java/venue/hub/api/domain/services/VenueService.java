@@ -1,8 +1,10 @@
 package venue.hub.api.domain.services;
 
 import jakarta.transaction.Transactional;
-import org.hibernate.query.Page;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import venue.hub.api.domain.dtos.mapper.VenueMapper;
 import venue.hub.api.domain.dtos.venue.VenueRequestDTO;
@@ -12,9 +14,7 @@ import venue.hub.api.domain.entities.Venue;
 import venue.hub.api.domain.repositories.AddressRepository;
 import venue.hub.api.domain.repositories.UserRepository;
 import venue.hub.api.domain.repositories.VenueRepository;
-
-import java.awt.print.Pageable;
-import java.util.List;
+import venue.hub.api.infra.exceptions.VenueNotFound;
 
 
 @Service
@@ -46,9 +46,15 @@ public class VenueService {
         return venueMapper.toDTO(venue);
     }
 
-    public List<VenueResponseDTO> getAllVenues(){
-        return venueRepository.findAll().stream()
-                .map(venue -> venueMapper.toDTO(venue))
-                .toList();
+    public Page<VenueResponseDTO> getAllVenues(Pageable paginacao){
+        return venueRepository.findAllByAtivoTrue(paginacao)
+                .map(venueMapper::toDTO);
+    }
+
+    public VenueResponseDTO getVenueById(Long id){
+        var venue = venueRepository.findById(id)
+                .orElseThrow(() -> new VenueNotFound(HttpStatus.NOT_FOUND, "Local não encontrado com o id: " + id));
+
+        return venueMapper.toDTO(venue);
     }
 }
