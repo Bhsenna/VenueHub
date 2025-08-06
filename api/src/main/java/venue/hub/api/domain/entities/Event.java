@@ -2,6 +2,7 @@ package venue.hub.api.domain.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import venue.hub.api.domain.dtos.event.EventUpdateDTO;
 import venue.hub.api.domain.enums.TipoEvento;
 
 import java.time.LocalDate;
@@ -41,4 +42,25 @@ public class Event {
             inverseJoinColumns = @JoinColumn(name = "additional_id")
     )
     private List<Additional> additionals;
+
+    public void update(EventUpdateDTO updateDTO) {
+        if (updateDTO.getTipoEvento() != null) {
+            this.tipoEvento = updateDTO.getTipoEvento();
+        }
+        if (updateDTO.getQtPessoas() != null && updateDTO.getQtPessoas() > 0) {
+            this.qtPessoas = updateDTO.getQtPessoas();
+        }
+        if (updateDTO.getDataInicio() != null) {
+            this.dataInicio = updateDTO.getDataInicio();
+        }
+        if (updateDTO.getDataFim() != null) {
+            this.dataFim = updateDTO.getDataFim();
+        }
+        if (updateDTO.getHoraInicio() != null) {
+            this.horaInicio = updateDTO.getHoraInicio();
+        }
+        if (updateDTO.getHoraFim() != null) {
+            this.horaFim = updateDTO.getHoraFim();
+        }
+    }
 }

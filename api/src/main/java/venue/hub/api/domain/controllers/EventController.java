@@ -1,5 +1,6 @@
 package venue.hub.api.domain.controllers;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import venue.hub.api.domain.dtos.event.EventRequestDTO;
 import venue.hub.api.domain.dtos.event.EventResponseDTO;
+import venue.hub.api.domain.dtos.event.EventUpdateDTO;
 import venue.hub.api.domain.dtos.page.PageResponse;
 import venue.hub.api.domain.services.EventService;
 
@@ -22,7 +24,7 @@ public class EventController {
 
     @PostMapping("/create")
     public ResponseEntity<EventResponseDTO> createEvent(
-            @RequestBody EventRequestDTO requestDTO,
+            @RequestBody @Valid EventRequestDTO requestDTO,
             UriComponentsBuilder uriBuilder
     ) {
         var event = eventService.createEvent(requestDTO);
@@ -51,5 +53,20 @@ public class EventController {
     public ResponseEntity<EventResponseDTO> getEventById(@PathVariable Long id) {
         EventResponseDTO event = eventService.getEventById(id);
         return ResponseEntity.ok(event);
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<EventResponseDTO> updateEvent(
+            @PathVariable Long id,
+            @RequestBody @Valid EventUpdateDTO updateDTO
+    ) {
+        EventResponseDTO updatedEvent = eventService.updateEvent(id, updateDTO);
+        return ResponseEntity.ok(updatedEvent);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> deleteEvent(@PathVariable Long id) {
+        eventService.deleteEvent(id);
+        return ResponseEntity.noContent().build();
     }
 }
