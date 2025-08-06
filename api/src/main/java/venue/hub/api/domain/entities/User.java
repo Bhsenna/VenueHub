@@ -26,6 +26,8 @@ public class User implements UserDetails {
     private String sobrenome;
     private String login;
     private String senha;
+
+    @Enumerated(EnumType.STRING)
     private UserRole role = UserRole.CLIENT;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -39,7 +41,6 @@ public class User implements UserDetails {
         this.sobrenome = sobrenome;
         this.login = login;
         this.senha = senha;
-        this.role = UserRole.CLIENT;
         this.address = address;
     }
 
