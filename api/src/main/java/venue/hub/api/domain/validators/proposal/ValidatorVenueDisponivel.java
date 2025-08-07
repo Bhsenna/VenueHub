@@ -4,20 +4,23 @@ import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import venue.hub.api.domain.dtos.proposal.ProposalRequestDTO;
-import venue.hub.api.domain.entities.Proposal;
+import venue.hub.api.domain.repositories.EventRepository;
 import venue.hub.api.domain.repositories.ProposalRepository;
-
-import java.util.Optional;
+import venue.hub.api.domain.repositories.VenueRepository;
 
 @Component
 public class ValidatorVenueDisponivel implements ProposalValidator {
+    @Autowired
+    VenueRepository venueRepository;
+    @Autowired
+    EventRepository eventRepository;
     @Autowired
     ProposalRepository proposalRepository;
 
     @Override
     public void validate(ProposalRequestDTO requestDTO) {
-        var venue = requestDTO.getVenue();
-        var event = requestDTO.getEvent();
+        var venue = venueRepository.getReferenceById(requestDTO.getVenueId());
+        var event = eventRepository.getReferenceById(requestDTO.getEventId());
         var dataInicio = event.getDataInicio();
         var dataFim = event.getDataFim();
         var horaInicio = event.getHoraInicio();
