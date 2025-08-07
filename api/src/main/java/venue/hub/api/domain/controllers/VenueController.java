@@ -67,7 +67,7 @@ public class VenueController {
     }
 
     @GetMapping("/all-events")
-    public ResponseEntity<PageResponse<EventResponseDTO>> getEvents(
+    public ResponseEntity<PageResponse<EventResponseDTO>> getAllEvents(
             @RequestParam Long venueId,
             @PageableDefault(size = 10, sort = {"id"}) Pageable paginacao) {
         var eventPage = venueService.getEvents(venueId, paginacao);
@@ -83,7 +83,7 @@ public class VenueController {
     }
 
     @GetMapping("/events")
-    public ResponseEntity<PageResponse<EventResponseDTO>> getEvents(
+    public ResponseEntity<PageResponse<EventResponseDTO>> getEventsCalendar(
             @RequestParam Long venueId,
             @RequestParam int month,
             @RequestParam int year,

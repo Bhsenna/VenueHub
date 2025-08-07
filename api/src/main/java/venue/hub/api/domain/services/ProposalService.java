@@ -11,6 +11,7 @@ import venue.hub.api.domain.dtos.proposal.ProposalRequestDTO;
 import venue.hub.api.domain.dtos.proposal.ProposalResponseDTO;
 import venue.hub.api.domain.dtos.proposal.ProposalUpdateDTO;
 import venue.hub.api.domain.entities.Proposal;
+import venue.hub.api.domain.enums.Status;
 import venue.hub.api.domain.repositories.ProposalRepository;
 import venue.hub.api.infra.exceptions.ProposalNotFoundException;
 
@@ -42,6 +43,18 @@ public class ProposalService {
     public ProposalResponseDTO getProposalById(Long id) {
         return proposalMapper.toDTO(findById(id));
     }
+
+    public Page<ProposalResponseDTO> getProposalsByVenueId(Long id, Pageable paginacao) {
+        return proposalRepository.findByVenueId(id, paginacao)
+                .map(proposalMapper::toDTO);
+    }
+
+    public Page<ProposalResponseDTO> getProposalsByVenueIdAndStatus(Long id, Status status, Pageable paginacao) {
+        return proposalRepository.findByVenueIdAndStatus(id, status, paginacao)
+                .map(proposalMapper::toDTO);
+    }
+
+
 
     @Transactional
     public ProposalResponseDTO updateProposal(Long id, ProposalUpdateDTO updateDTO) {

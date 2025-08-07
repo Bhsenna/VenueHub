@@ -13,6 +13,7 @@ import venue.hub.api.domain.dtos.page.PageResponse;
 import venue.hub.api.domain.dtos.proposal.ProposalRequestDTO;
 import venue.hub.api.domain.dtos.proposal.ProposalResponseDTO;
 import venue.hub.api.domain.dtos.proposal.ProposalUpdateDTO;
+import venue.hub.api.domain.enums.Status;
 import venue.hub.api.domain.services.ProposalService;
 
 import java.util.List;
@@ -56,6 +57,42 @@ public class ProposalController {
     public ResponseEntity<ProposalResponseDTO> getProposalById(@PathVariable Long id) {
         ProposalResponseDTO response = proposalService.getProposalById(id);
         return ResponseEntity.ok(response);
+    }
+
+
+    @GetMapping("/venues/{id}/status")
+    public ResponseEntity<PageResponse<ProposalResponseDTO>> getProposalByVenueAndStatus(
+            @PathVariable Long id,
+            @RequestParam Status status,
+            @PageableDefault(size = 10, sort = {"id"}) Pageable paginacao) {
+
+        var proposalPage = proposalService.getProposalsByVenueIdAndStatus(id, status, paginacao);
+        List<ProposalResponseDTO> proposals = proposalPage.getContent();
+
+        return ResponseEntity.ok(
+                PageResponse.<ProposalResponseDTO>builder()
+                        .totalPages(proposalPage.getTotalPages())
+                        .totalElements(proposalPage.getTotalElements())
+                        .currentPageData(proposals)
+                        .build()
+        );
+    }
+
+    @GetMapping("/venues/{id}")
+    public ResponseEntity<PageResponse<ProposalResponseDTO>> getProposalByVenue(
+            @PathVariable Long id,
+            @PageableDefault(size = 10, sort = {"id"}) Pageable paginacao) {
+
+        var proposalPage = proposalService.getProposalsByVenueId(id, paginacao);
+        List<ProposalResponseDTO> proposals = proposalPage.getContent();
+
+        return ResponseEntity.ok(
+                PageResponse.<ProposalResponseDTO>builder()
+                        .totalPages(proposalPage.getTotalPages())
+                        .totalElements(proposalPage.getTotalElements())
+                        .currentPageData(proposals)
+                        .build()
+        );
     }
 
     @PutMapping("/{id}")
