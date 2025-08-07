@@ -1,5 +1,7 @@
 package venue.hub.api.domain.dtos.proposal;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,7 +19,10 @@ import java.time.LocalTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProposalRequestDTO {
-    private Event event;
-    private Venue venue;
+    private Long eventId;
+    private Long venueId;
+
+    @NotNull
+    @Positive
     private Double valor;
 }
