@@ -10,13 +10,19 @@ import venue.hub.api.domain.dtos.mapper.VenueMapper;
 import venue.hub.api.domain.dtos.venue.VenueRequestDTO;
 import venue.hub.api.domain.dtos.venue.VenueResponseDTO;
 import venue.hub.api.domain.dtos.venue.VenueUpdateDTO;
-import venue.hub.api.domain.entities.User;
+import venue.hub.api.domain.dtos.venueadditional.VenueAdditionalRequestDTO;
+import venue.hub.api.domain.entities.Additional;
 import venue.hub.api.domain.entities.Venue;
+import venue.hub.api.domain.entities.VenueAdditional;
+import venue.hub.api.domain.entities.VenueAdditionalId;
+import venue.hub.api.domain.repositories.AdditionalRepository;
 import venue.hub.api.domain.repositories.AddressRepository;
-import venue.hub.api.domain.repositories.UserRepository;
+import venue.hub.api.domain.repositories.VenueAdditionalRepository;
 import venue.hub.api.domain.repositories.VenueRepository;
 import venue.hub.api.infra.exceptions.VenueNotFound;
 
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class VenueService {
@@ -30,15 +36,35 @@ public class VenueService {
     @Autowired
     private AddressRepository addressRepository;
 
+    @Autowired
+    private AdditionalRepository additionalRepository;
 
+    @Autowired
+    private VenueAdditionalRepository venueAdditionalRepository;
 
     @Transactional
     public VenueResponseDTO createVenue(VenueRequestDTO venueRequestDTO) {
         Venue venue = venueMapper.toEntity(venueRequestDTO);
-        addressRepository.save(venue.getAddress());
 
+        addressRepository.save(venue.getAddress());
         venueRepository.save(venue);
 
+        if (venueRequestDTO.getAdditionals() != null) {
+            List<VenueAdditional> additionalList = new ArrayList<>();
+            for (VenueAdditionalRequestDTO additionalDTO : venueRequestDTO.getAdditionals()) {
+                Additional additional = additionalRepository.findById(additionalDTO.getAdditionalId())
+                        .orElseThrow(() -> new RuntimeException("Additional não encontrado: " + additionalDTO.getAdditionalId()));
+
+                VenueAdditional venueAdditional = new VenueAdditional();
+                venueAdditional.setId(new VenueAdditionalId(venue.getId(), additional.getId()));
+                venueAdditional.setVenue(venue);
+                venueAdditional.setAdditional(additional);
+                venueAdditional.setValor(additionalDTO.getValor());
+
+                additionalList.add(venueAdditional);
+            }
+            venue.setAdditionals(additionalList);
+        }
         return venueMapper.toDTO(venue);
     }
 

@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import venue.hub.api.domain.dtos.venue.VenueUpdateDTO;
 
+import java.util.List;
+
 @Table(name = "venues")
 @Entity(name = "Venue")
 @Getter
@@ -30,6 +32,9 @@ public class Venue {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "venue", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<VenueAdditional> additionals;
 
     private boolean ativo = true;
 

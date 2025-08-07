@@ -1,6 +1,5 @@
 package venue.hub.api.domain.dtos.venue;
 
-
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
@@ -11,7 +10,6 @@ import venue.hub.api.domain.dtos.address.AddressRequestDTO;
 import venue.hub.api.domain.dtos.venueadditional.VenueAdditionalRequestDTO;
 
 import java.util.List;
-
 
 @Data
 @AllArgsConstructor
