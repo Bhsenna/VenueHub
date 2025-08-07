@@ -29,6 +29,7 @@ public class Proposal {
 
     private Double valor;
 
+    @Enumerated(EnumType.STRING)
     private Status status = Status.PENDENTE;
 
     private LocalDateTime dataCriacao = LocalDateTime.now();

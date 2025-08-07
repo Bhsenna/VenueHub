@@ -6,6 +6,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import venue.hub.api.domain.dtos.event.EventResponseDTO;
+import venue.hub.api.domain.dtos.mapper.EventMapper;
 import venue.hub.api.domain.dtos.mapper.VenueMapper;
 import venue.hub.api.domain.dtos.venue.VenueRequestDTO;
 import venue.hub.api.domain.dtos.venue.VenueResponseDTO;
@@ -30,7 +32,8 @@ public class VenueService {
     @Autowired
     private AddressRepository addressRepository;
 
-
+    @Autowired
+    private EventMapper eventMapper;
 
     @Transactional
     public VenueResponseDTO createVenue(VenueRequestDTO venueRequestDTO) {
@@ -66,6 +69,16 @@ public class VenueService {
         Venue venue = findById(id);
         venue.setAtivo(false);
         venueRepository.save(venue);
+    }
+
+    public Page<EventResponseDTO> getEvents(Long venueId, Pageable paginacao) {
+        return venueRepository.findEvents(venueId, paginacao)
+                .map(eventMapper::toDTO);
+    }
+
+    public Page<EventResponseDTO> getEventsByMonthAndYear(Long venueId, int month, int year, Pageable paginacao) {
+        return venueRepository.findConfirmedEventsByVenueAndDate(venueId, month, year, paginacao)
+                .map(eventMapper::toDTO);
     }
 
     public Venue findById(Long id) {
