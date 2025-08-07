@@ -67,6 +67,6 @@ public class ProposalService {
 
     public Proposal findById(Long id) {
         return proposalRepository.findById(id)
-                .orElseThrow(() -> new ProposalNotFoundException("Proposta não encontrada com o id: " + id, HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ProposalNotFoundException(HttpStatus.NOT_FOUND, "Proposta não encontrada com o id: " + id));
     }
 }

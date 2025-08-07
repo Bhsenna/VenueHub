@@ -16,26 +16,25 @@ import venue.hub.api.domain.repositories.AddressRepository;
 import venue.hub.api.domain.repositories.UserRepository;
 import venue.hub.api.domain.repositories.VenueRepository;
 import venue.hub.api.domain.validators.address.AddressValidator;
-import venue.hub.api.infra.exceptions.VenueNotFound;
+import venue.hub.api.infra.exceptions.UserNotFoundException;
+import venue.hub.api.infra.exceptions.VenueNotFoundException;
 
 import java.util.List;
-
 
 @Service
 public class VenueService {
 
     @Autowired
-    private VenueRepository venueRepository;
+    VenueRepository venueRepository;
 
     @Autowired
-    private VenueMapper venueMapper;
+    AddressRepository addressRepository;
 
     @Autowired
-    private AddressRepository addressRepository;
+    VenueMapper venueMapper;
 
     @Autowired
-    private List<AddressValidator> addressValidators;
-
+    List<AddressValidator> addressValidators;
 
     @Transactional
     public VenueResponseDTO createVenue(VenueRequestDTO requestDTO){
@@ -56,13 +55,13 @@ public class VenueService {
     }
 
     public VenueResponseDTO getVenueById(Long id) {
-        var venue = findById(id);
+        var venue = this.findById(id);
 
         return venueMapper.toDTO(venue);
     }
 
     public VenueResponseDTO updateVenue(Long id, VenueUpdateDTO updateDTO) {
-        var venue = findById(id);
+        var venue = this.findById(id);
         venue.update(updateDTO);
 
         addressRepository.save(venue.getAddress());
@@ -71,13 +70,13 @@ public class VenueService {
     }
 
     public void deleteVenue(Long id) {
-        Venue venue = findById(id);
+        Venue venue = this.findById(id);
         venue.setAtivo(false);
         venueRepository.save(venue);
     }
 
     public Venue findById(Long id) {
         return venueRepository.findById(id)
-                .orElseThrow(() -> new VenueNotFound(HttpStatus.NOT_FOUND, "Local não encontrado com o id: " + id));
+                .orElseThrow(() -> new VenueNotFoundException(HttpStatus.NOT_FOUND, "Local não encontrado com o id: " + id));
     }
 }

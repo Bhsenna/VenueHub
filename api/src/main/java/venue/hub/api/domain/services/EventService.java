@@ -67,6 +67,6 @@ public class EventService {
 
     public Event findById(Long id) {
         return eventRepository.findById(id)
-                .orElseThrow(() -> new EventNotFoundException("Evento não encontrado com o id: " + id, HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new EventNotFoundException(HttpStatus.NOT_FOUND, "Evento não encontrado com o id: " + id));
     }
 }
