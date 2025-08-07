@@ -8,8 +8,11 @@ import venue.hub.api.domain.dtos.proposal.ProposalRequestDTO;
 import venue.hub.api.domain.dtos.proposal.ProposalResponseDTO;
 import venue.hub.api.domain.entities.Proposal;
 import venue.hub.api.domain.repositories.ProposalRepository;
+import venue.hub.api.domain.validators.proposal.ProposalValidator;
 import venue.hub.api.infra.exceptions.ProposalNotFoundException;
 import venue.hub.api.infra.exceptions.UserNotFoundException;
+
+import java.util.List;
 
 @Service
 public class ProposalService {
@@ -20,7 +23,12 @@ public class ProposalService {
     @Autowired
     ProposalMapper proposalMapper;
 
+    @Autowired
+    List<ProposalValidator> proposalValidators;
+
     public ProposalResponseDTO createProposal(ProposalRequestDTO requestDTO) {
+        proposalValidators.forEach(v -> v.validate(requestDTO));
+
         Proposal proposal = proposalMapper.toEntity(requestDTO);
 
         proposalRepository.save(proposal);

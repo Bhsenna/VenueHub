@@ -14,7 +14,10 @@ import venue.hub.api.domain.entities.Venue;
 import venue.hub.api.domain.repositories.AddressRepository;
 import venue.hub.api.domain.repositories.UserRepository;
 import venue.hub.api.domain.repositories.VenueRepository;
+import venue.hub.api.domain.validators.address.AddressValidator;
 import venue.hub.api.infra.exceptions.VenueNotFound;
+
+import java.util.List;
 
 
 @Service
@@ -29,12 +32,17 @@ public class VenueService {
     @Autowired
     private AddressRepository addressRepository;
 
+    @Autowired
+    private List<AddressValidator> addressValidators;
 
     @Transactional
-    public VenueResponseDTO createVenue(VenueRequestDTO venueRequestDTO){
-        Venue venue = venueMapper.toEntity(venueRequestDTO);
-        addressRepository.save(venue.getAddress());
+    public VenueResponseDTO createVenue(VenueRequestDTO requestDTO){
 
+        addressValidators.forEach(v -> v.validate(requestDTO.getAddress()));
+
+        Venue venue = venueMapper.toEntity(requestDTO);
+
+        addressRepository.save(venue.getAddress());
         venueRepository.save(venue);
 
         return venueMapper.toDTO(venue);
