@@ -2,6 +2,7 @@ package venue.hub.api.domain.repositories;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import venue.hub.api.domain.entities.Proposal;
@@ -11,7 +12,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public interface ProposalRepository extends JpaRepository<Proposal, Long> {
-    Page<Proposal> findAll(Pageable paginacao);
+    Page<Proposal> findAll(Specification<Proposal> spec, Pageable paginacao);
 
     @Query(value = """
             SELECT count(p.id) > 0

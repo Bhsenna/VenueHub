@@ -23,7 +23,10 @@ public class Address {
     private String complemento;
     private String bairro;
     private String cidade;
+
+    @Enumerated(EnumType.STRING)
     private Estado estado;
+
     private Double latitude;
     private Double longitude;
 

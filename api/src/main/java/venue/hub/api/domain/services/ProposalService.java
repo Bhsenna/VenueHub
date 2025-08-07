@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import venue.hub.api.domain.dtos.mapper.ProposalMapper;
@@ -40,10 +41,9 @@ public class ProposalService {
         return proposalMapper.toDTO(proposal);
     }
 
-    public Page<ProposalResponseDTO> getAllProposals(Pageable paginacao) {
-        Page<Proposal> proposals = proposalRepository.findAll(paginacao);
-
-        return proposals.map(proposalMapper::toDTO);
+    public Page<ProposalResponseDTO> getAllProposals(Specification<Proposal> spec, Pageable paginacao) {
+        return proposalRepository.findAll(spec, paginacao)
+                .map(proposalMapper::toDTO);
     }
 
     public ProposalResponseDTO getProposalById(Long id) {

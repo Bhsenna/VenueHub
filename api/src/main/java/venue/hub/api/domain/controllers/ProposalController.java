@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 import org.hibernate.query.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +14,10 @@ import venue.hub.api.domain.dtos.page.PageResponse;
 import venue.hub.api.domain.dtos.proposal.ProposalRequestDTO;
 import venue.hub.api.domain.dtos.proposal.ProposalResponseDTO;
 import venue.hub.api.domain.dtos.proposal.ProposalUpdateDTO;
+import venue.hub.api.domain.entities.Proposal;
+import venue.hub.api.domain.enums.Status;
 import venue.hub.api.domain.services.ProposalService;
+import venue.hub.api.domain.specification.ProposalSpecification;
 
 import java.util.List;
 
@@ -38,9 +42,14 @@ public class ProposalController {
 
     @GetMapping("/all")
     public ResponseEntity<PageResponse<ProposalResponseDTO>> getAllProposals(
-            @PageableDefault(size = 10, sort = {"id"}) Pageable paginacao
+            @PageableDefault(size = 10, sort = {"id"}) Pageable paginacao,
+            @RequestParam(value = "status", required = false) Status status
     ) {
-        var proposalPage = proposalService.getAllProposals(paginacao);
+        Specification<Proposal> spec = Specification.allOf(
+                ProposalSpecification.comStatus(status)
+        );
+
+        var proposalPage = proposalService.getAllProposals(spec, paginacao);
         List<ProposalResponseDTO> proposals = proposalPage.getContent();
 
         return ResponseEntity.ok(
