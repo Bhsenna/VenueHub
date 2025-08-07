@@ -10,6 +10,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import venue.hub.api.domain.dtos.page.PageResponse;
 import venue.hub.api.domain.dtos.venue.VenueRequestDTO;
 import venue.hub.api.domain.dtos.venue.VenueResponseDTO;
+import venue.hub.api.domain.dtos.venue.VenueUpdateDTO;
 import venue.hub.api.domain.services.VenueService;
 
 import java.util.List;
@@ -21,7 +22,7 @@ public class VenueController {
     @Autowired
     private VenueService venueService;
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<VenueResponseDTO> createVenue(@RequestBody @Valid VenueRequestDTO requestDTO, UriComponentsBuilder uriBuilder){
         var venue = venueService.createVenue(requestDTO);
         var uri = uriBuilder.path("/api/v1/venues/{id}").buildAndExpand(venue.getId()).toUri();
@@ -29,7 +30,7 @@ public class VenueController {
         return ResponseEntity.created(uri).body(venue);
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<PageResponse<VenueResponseDTO>> getAllVenues(
             @PageableDefault(size = 10, sort = {"id"}) Pageable paginacao) {
         var venuePage = venueService.getAllVenues(paginacao);
@@ -49,5 +50,21 @@ public class VenueController {
         VenueResponseDTO venue = venueService.getVenueById(id);
         return ResponseEntity.ok(venue);
     }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<VenueResponseDTO> updateVenue(
+            @PathVariable Long id,
+            @RequestBody @Valid VenueUpdateDTO updateDTO) {
+        VenueResponseDTO updatedVenue = venueService.updateVenue(id, updateDTO);
+        return ResponseEntity.ok(updatedVenue);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> deleteVenue(@PathVariable Long id) {
+        venueService.deleteVenue(id);
+        return ResponseEntity.noContent().build();
+    }
+
+
 
 }

@@ -2,6 +2,7 @@ package venue.hub.api.domain.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import venue.hub.api.domain.dtos.venue.VenueUpdateDTO;
 
 @Table(name = "venues")
 @Entity(name = "Venue")
@@ -31,4 +32,31 @@ public class Venue {
     private User user;
 
     private boolean ativo = true;
+
+    public void update(VenueUpdateDTO updateDTO) {
+
+        if (updateDTO.getNome() != null && !updateDTO.getNome().isBlank()) {
+            this.nome = updateDTO.getNome();
+        }
+
+        if (updateDTO.getCapacidade() != null && updateDTO.getCapacidade() > 0) {
+            this.capacidade = updateDTO.getCapacidade();
+        }
+
+        if (updateDTO.getDescricao() != null && !updateDTO.getDescricao().isBlank()) {
+            this.descricao = updateDTO.getDescricao();
+        }
+
+        if (updateDTO.getTelefone() != null) {
+            this.telefone = updateDTO.getTelefone();
+        }
+
+        if (updateDTO.getValor() != null) {
+            this.valor = updateDTO.getValor();
+        }
+
+        if (updateDTO.getAddress() != null) {
+            this.address.update(updateDTO.getAddress());
+        }
+    }
 }
