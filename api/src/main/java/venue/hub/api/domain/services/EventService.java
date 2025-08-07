@@ -12,9 +12,11 @@ import venue.hub.api.domain.dtos.event.EventUpdateDTO;
 import venue.hub.api.domain.dtos.mapper.EventMapper;
 import venue.hub.api.domain.entities.Event;
 import venue.hub.api.domain.repositories.EventRepository;
+import venue.hub.api.domain.validators.event.EventValidator;
 import venue.hub.api.infra.exceptions.EventNotFoundException;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 public class EventService {
@@ -25,7 +27,12 @@ public class EventService {
     @Autowired
     EventMapper eventMapper;
 
+    @Autowired
+    List<EventValidator> eventValidators;
+
     public EventResponseDTO createEvent(EventRequestDTO requestDTO) {
+        eventValidators.forEach(v -> v.validate(requestDTO));
+
         Event event = eventMapper.toEntity(requestDTO);
 
         eventRepository.save(event);

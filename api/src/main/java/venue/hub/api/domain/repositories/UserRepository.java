@@ -9,4 +9,6 @@ import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
     Page<User> findAllByAtivoTrue(Pageable paginacao);
+
+    boolean existsByLogin(String login);
 }
