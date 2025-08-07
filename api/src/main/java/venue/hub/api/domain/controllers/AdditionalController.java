@@ -42,4 +42,19 @@ public class AdditionalController {
                         .build()
         );
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<AdditionalResponseDTO> getAdditionalById(@PathVariable Long id) {
+        AdditionalResponseDTO additional = additionalService.getAdditionalById(id);
+        return ResponseEntity.ok(additional);
+    }
+
+    @PutMapping("update/{id}")
+    public ResponseEntity<AdditionalResponseDTO> updateAdditional(
+            @PathVariable Long id,
+            @RequestBody @Valid AdditionalRequestDTO dto
+    ) {
+            AdditionalResponseDTO updatedAdditional = additionalService.updateAdditional(id, dto);
+            return ResponseEntity.ok(updatedAdditional);
+    }
 }
