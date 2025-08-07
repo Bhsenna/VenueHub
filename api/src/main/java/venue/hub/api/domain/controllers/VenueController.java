@@ -11,6 +11,7 @@ import venue.hub.api.domain.dtos.page.PageResponse;
 import venue.hub.api.domain.dtos.venue.VenueRequestDTO;
 import venue.hub.api.domain.dtos.venue.VenueResponseDTO;
 import venue.hub.api.domain.dtos.venue.VenueUpdateDTO;
+import venue.hub.api.domain.dtos.venueadditional.PatchVenueAdditionalsRequestDTO;
 import venue.hub.api.domain.services.VenueService;
 
 import java.util.List;
@@ -65,6 +66,13 @@ public class VenueController {
         return ResponseEntity.noContent().build();
     }
 
-
+//    @PatchMapping("/{venueId}/additionals")
+//    public ResponseEntity<VenueResponseDTO> updateVenueAdditionals(
+//            @PathVariable Long venueId,
+//            @RequestBody PatchVenueAdditionalsRequestDTO dto) {
+//
+//        VenueResponseDTO response = venueService.updateAdditionals(venueId, dto.getAdditionals());
+//        return ResponseEntity.ok(response);
+//    }
 
 }

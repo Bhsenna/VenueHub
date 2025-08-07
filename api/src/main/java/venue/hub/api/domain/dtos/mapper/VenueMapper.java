@@ -7,12 +7,13 @@ import venue.hub.api.domain.dtos.venue.VenueResponseDTO;
 import venue.hub.api.domain.entities.Venue;
 import venue.hub.api.domain.services.UserService;
 
-@Mapper(componentModel = "spring", uses = {AddressMapper.class, UserService.class, UserMapper.class})
+@Mapper(componentModel = "spring", uses = {AddressMapper.class, UserService.class, UserMapper.class, VenueAdditionalMapper.class})
 public interface VenueMapper {
 
-
+    @Mapping(source = "additionals", target = "additionals")
     VenueResponseDTO toDTO(Venue venue);
 
     @Mapping(source = "userId", target = "user")
+    @Mapping(target = "additionals", ignore = true)
     Venue toEntity(VenueRequestDTO venueRequestDTO);
 }

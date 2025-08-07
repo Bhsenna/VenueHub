@@ -20,7 +20,6 @@ public class AddressRequestDTO {
     private String logradouro;
     @NotNull @Positive
     private Integer numero;
-    @NotBlank
     private String complemento;
     @NotBlank
     private String bairro;

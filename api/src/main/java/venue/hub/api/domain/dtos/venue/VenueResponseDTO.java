@@ -5,8 +5,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import venue.hub.api.domain.dtos.address.AddressResponseDTO;
 import venue.hub.api.domain.dtos.user.UserResponseDTO;
+import venue.hub.api.domain.dtos.venueadditional.VenueAdditionalResponseDTO;
 import venue.hub.api.domain.entities.Address;
 import venue.hub.api.domain.entities.User;
+
+import java.util.List;
 
 
 @Data
@@ -20,7 +23,9 @@ public class VenueResponseDTO {
     private String descricao;
     private String telefone;
     private double valor;
+    private List<VenueAdditionalResponseDTO> additionals;
     private AddressResponseDTO address;
     private UserResponseDTO user;
     private boolean ativo;
+
 }
