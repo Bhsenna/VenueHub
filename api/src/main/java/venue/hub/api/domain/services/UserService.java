@@ -1,5 +1,6 @@
 package venue.hub.api.domain.services;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,11 +32,12 @@ public class UserService {
     UserMapper userMapper;
 
     @Autowired
-    private List<AddressValidator> addressValidators;
+    List<AddressValidator> addressValidators;
 
     @Autowired
-    private List<UserValidator> userValidators;
+    List<UserValidator> userValidators;
 
+    @Transactional
     public UserResponseDTO createUser(UserRequestDTO requestDTO) {
 
         addressValidators.forEach(v -> v.validate(requestDTO.getAddress()));
@@ -78,6 +80,6 @@ public class UserService {
 
     public User findById(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado com o id: " + id, HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new UserNotFoundException(HttpStatus.NOT_FOUND, "Usuário não encontrado com o id: " + id));
     }
 }

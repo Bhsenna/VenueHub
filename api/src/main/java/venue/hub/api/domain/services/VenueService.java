@@ -12,28 +12,27 @@ import venue.hub.api.domain.dtos.venue.VenueResponseDTO;
 import venue.hub.api.domain.entities.User;
 import venue.hub.api.domain.entities.Venue;
 import venue.hub.api.domain.repositories.AddressRepository;
-import venue.hub.api.domain.repositories.UserRepository;
 import venue.hub.api.domain.repositories.VenueRepository;
 import venue.hub.api.domain.validators.address.AddressValidator;
-import venue.hub.api.infra.exceptions.VenueNotFound;
+import venue.hub.api.infra.exceptions.UserNotFoundException;
+import venue.hub.api.infra.exceptions.VenueNotFoundException;
 
 import java.util.List;
-
 
 @Service
 public class VenueService {
 
     @Autowired
-    private VenueRepository venueRepository;
+    VenueRepository venueRepository;
 
     @Autowired
-    private VenueMapper venueMapper;
+    AddressRepository addressRepository;
 
     @Autowired
-    private AddressRepository addressRepository;
+    VenueMapper venueMapper;
 
     @Autowired
-    private List<AddressValidator> addressValidators;
+    List<AddressValidator> addressValidators;
 
     @Transactional
     public VenueResponseDTO createVenue(VenueRequestDTO requestDTO){
@@ -54,9 +53,12 @@ public class VenueService {
     }
 
     public VenueResponseDTO getVenueById(Long id){
-        var venue = venueRepository.findById(id)
-                .orElseThrow(() -> new VenueNotFound(HttpStatus.NOT_FOUND, "Local não encontrado com o id: " + id));
-
+        var venue = this.findById(id);
         return venueMapper.toDTO(venue);
+    }
+
+    public Venue findById(Long id) {
+        return venueRepository.findById(id)
+                .orElseThrow(() -> new VenueNotFoundException(HttpStatus.NOT_FOUND, "Local não encontrado com o id: " + id));
     }
 }
