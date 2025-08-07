@@ -9,7 +9,6 @@ import venue.hub.api.domain.enums.Estado;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AddressResponseDTO {
-
     private Long id;
     private String cep;
     private String logradouro;
@@ -20,5 +19,4 @@ public class AddressResponseDTO {
     private Estado estado;
     private Double latitude;
     private Double longitude;
-
 }
