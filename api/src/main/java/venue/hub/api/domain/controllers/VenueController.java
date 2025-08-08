@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import venue.hub.api.domain.dtos.event.EventResponseDTO;
@@ -18,11 +20,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/venues")
+@EnableWebSecurity
 public class VenueController {
 
     @Autowired
     private VenueService venueService;
 
+    @PreAuthorize("hasRole('OWNER')")
     @PostMapping("/create")
     public ResponseEntity<VenueResponseDTO> createVenue(@RequestBody @Valid VenueRequestDTO requestDTO, UriComponentsBuilder uriBuilder){
         var venue = venueService.createVenue(requestDTO);
@@ -31,10 +35,27 @@ public class VenueController {
         return ResponseEntity.created(uri).body(venue);
     }
 
+//    @PreAuthorize("hasAnyRole('ADMIN', 'OWNER')")
+//    @GetMapping("/all")
+//    public ResponseEntity<PageResponse<VenueResponseDTO>> getAllVenues(
+//            @PageableDefault(size = 10, sort = {"id"}) Pageable paginacao) {
+//        var venuePage = venueService.getAllVenues(paginacao);
+//        List<VenueResponseDTO> venues = venuePage.getContent();
+//
+//        return ResponseEntity.ok(
+//                PageResponse.<VenueResponseDTO>builder()
+//                        .totalPages(venuePage.getTotalPages())
+//                        .totalElements(venuePage.getTotalElements())
+//                        .currentPageData(venues)
+//                        .build()
+//        );
+//    }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'OWNER')")
     @GetMapping("/all")
-    public ResponseEntity<PageResponse<VenueResponseDTO>> getAllVenues(
+    public ResponseEntity<PageResponse<VenueResponseDTO>> getVenuesByOwner(
             @PageableDefault(size = 10, sort = {"id"}) Pageable paginacao) {
-        var venuePage = venueService.getAllVenues(paginacao);
+        var venuePage = venueService.getVenuesByUser(paginacao);
         List<VenueResponseDTO> venues = venuePage.getContent();
 
         return ResponseEntity.ok(
@@ -46,12 +67,14 @@ public class VenueController {
         );
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<VenueResponseDTO> getVenueById(@PathVariable Long id) {
         VenueResponseDTO venue = venueService.getVenueById(id);
         return ResponseEntity.ok(venue);
     }
 
+    @PreAuthorize("hasRole('OWNER'")
     @PutMapping("/update/{id}")
     public ResponseEntity<VenueResponseDTO> updateVenue(
             @PathVariable Long id,
@@ -60,12 +83,14 @@ public class VenueController {
         return ResponseEntity.ok(updatedVenue);
     }
 
+    @PreAuthorize("hasRole('OWNER'")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteVenue(@PathVariable Long id) {
         venueService.deleteVenue(id);
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasRole('OWNER')")
     @GetMapping("/all-events")
     public ResponseEntity<PageResponse<EventResponseDTO>> getAllEvents(
             @RequestParam Long venueId,
@@ -82,6 +107,7 @@ public class VenueController {
         );
     }
 
+    @PreAuthorize("hasRole('OWNER')")
     @GetMapping("/events")
     public ResponseEntity<PageResponse<EventResponseDTO>> getEventsCalendar(
             @RequestParam Long venueId,

@@ -34,7 +34,9 @@ public class SecurityConfigurations {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(HttpMethod.POST, "/api/v1/users/auth/*").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/auth/*").permitAll()
+                        .requestMatchers("/api/v1/venues").hasRole("OWNER")
+                        .requestMatchers("/api/v1/events").hasRole("CLIENT")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)

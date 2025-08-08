@@ -11,6 +11,7 @@ import venue.hub.api.domain.dtos.proposal.ProposalRequestDTO;
 import venue.hub.api.domain.dtos.proposal.ProposalResponseDTO;
 import venue.hub.api.domain.dtos.proposal.ProposalUpdateDTO;
 import venue.hub.api.domain.entities.Proposal;
+import venue.hub.api.domain.entities.User;
 import venue.hub.api.domain.enums.Status;
 import venue.hub.api.domain.repositories.ProposalRepository;
 import venue.hub.api.infra.exceptions.ProposalNotFoundException;
@@ -20,10 +21,13 @@ import venue.hub.api.infra.exceptions.ProposalNotFoundException;
 public class ProposalService {
 
     @Autowired
-    ProposalRepository proposalRepository;
+    private ProposalRepository proposalRepository;
 
     @Autowired
-    ProposalMapper proposalMapper;
+    private ProposalMapper proposalMapper;
+
+    @Autowired
+    private AuthenticationService authenticationService;
 
     public ProposalResponseDTO createProposal(ProposalRequestDTO requestDTO) {
 
@@ -34,11 +38,37 @@ public class ProposalService {
         return proposalMapper.toDTO(proposal);
     }
 
-    public Page<ProposalResponseDTO> getAllProposals(Pageable paginacao) {
+    private Page<ProposalResponseDTO> getAllProposals(Pageable paginacao) {
         Page<Proposal> proposals = proposalRepository.findAll(paginacao);
 
         return proposals.map(proposalMapper::toDTO);
     }
+
+    public Page<ProposalResponseDTO> getAllProposalsByUser(Pageable paginacao) {
+        User user = authenticationService.getAuthenticatedUser();
+
+        switch (user.getRole()) {
+            case OWNER -> {
+                return proposalRepository.findAllByOwner(user, paginacao)
+                        .map(proposalMapper::toDTO);
+            }
+            case CLIENT -> {
+                proposalRepository.findAllByClient(user, paginacao)
+                        .map(proposalMapper::toDTO);
+            }
+            case ADMIN -> {
+                return getAllProposals(paginacao);
+            }
+            default -> {
+                return null;
+            }
+        }
+
+        Page<Proposal> proposals = proposalRepository.findAllByClient(user, paginacao);
+
+        return proposals.map(proposalMapper::toDTO);
+    }
+
 
     public ProposalResponseDTO getProposalById(Long id) {
         return proposalMapper.toDTO(findById(id));

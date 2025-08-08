@@ -11,6 +11,7 @@ import venue.hub.api.domain.dtos.event.EventResponseDTO;
 import venue.hub.api.domain.dtos.event.EventUpdateDTO;
 import venue.hub.api.domain.dtos.mapper.EventMapper;
 import venue.hub.api.domain.entities.Event;
+import venue.hub.api.domain.entities.User;
 import venue.hub.api.domain.repositories.EventRepository;
 import venue.hub.api.infra.exceptions.EventNotFoundException;
 
@@ -20,10 +21,13 @@ import java.time.LocalDate;
 public class EventService {
 
     @Autowired
-    EventRepository eventRepository;
+    private EventRepository eventRepository;
 
     @Autowired
-    EventMapper eventMapper;
+    private EventMapper eventMapper;
+
+    @Autowired
+    private AuthenticationService authenticationService;
 
     public EventResponseDTO createEvent(EventRequestDTO requestDTO) {
         Event event = eventMapper.toEntity(requestDTO);
@@ -34,9 +38,28 @@ public class EventService {
     }
 
     public Page<EventResponseDTO> getAllEvents(Pageable paginacao) {
+        User user = authenticationService.getAuthenticatedUser();
+
+        switch (user.getRole()) {
+            case CLIENT -> {
+                return eventRepository.findByUser(user, paginacao)
+                        .map(eventMapper::toDTO);
+            }
+            case ADMIN -> {
+                return getAllEvents(paginacao);
+            }
+            default -> {
+                return null;
+            }
+        }
+
+    }
+
+    private Page<EventResponseDTO> findAll(Pageable paginacao) {
         return eventRepository.findAllByDataFimAfter(LocalDate.now(), paginacao)
                 .map(eventMapper::toDTO);
     }
+
 
     public EventResponseDTO getEventById(Long id) {
         var event = this.findById(id);

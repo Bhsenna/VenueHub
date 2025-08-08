@@ -15,7 +15,6 @@ import venue.hub.api.domain.dtos.venue.VenueUpdateDTO;
 import venue.hub.api.domain.entities.User;
 import venue.hub.api.domain.entities.Venue;
 import venue.hub.api.domain.repositories.AddressRepository;
-import venue.hub.api.domain.repositories.UserRepository;
 import venue.hub.api.domain.repositories.VenueRepository;
 import venue.hub.api.infra.exceptions.VenueNotFound;
 
@@ -35,6 +34,9 @@ public class VenueService {
     @Autowired
     private EventMapper eventMapper;
 
+    @Autowired
+    private AuthenticationService authenticationService;
+
     @Transactional
     public VenueResponseDTO createVenue(VenueRequestDTO venueRequestDTO) {
         Venue venue = venueMapper.toEntity(venueRequestDTO);
@@ -45,10 +47,29 @@ public class VenueService {
         return venueMapper.toDTO(venue);
     }
 
-    public Page<VenueResponseDTO> getAllVenues(Pageable paginacao) {
+    public Page<VenueResponseDTO> getVenuesByUser(Pageable paginacao) {
+        User user = authenticationService.getAuthenticatedUser();
+
+        switch (user.getRole()) {
+            case OWNER -> {
+                return venueRepository.findByUser(user, paginacao)
+                        .map(venueMapper::toDTO);
+            }
+            case ADMIN -> {
+                return getAllVenues(paginacao);
+            }
+            default -> {
+                return null;
+            }
+        }
+
+    }
+
+    private Page<VenueResponseDTO> getAllVenues(Pageable paginacao) {
         return venueRepository.findAllByAtivoTrue(paginacao)
                 .map(venueMapper::toDTO);
     }
+
 
     public VenueResponseDTO getVenueById(Long id) {
         var venue = findById(id);
@@ -72,12 +93,15 @@ public class VenueService {
     }
 
     public Page<EventResponseDTO> getEvents(Long venueId, Pageable paginacao) {
-        return venueRepository.findEvents(venueId, paginacao)
+        User user = authenticationService.getAuthenticatedUser();
+
+        return venueRepository.findEvents(venueId, user, paginacao)
                 .map(eventMapper::toDTO);
     }
 
     public Page<EventResponseDTO> getEventsByMonthAndYear(Long venueId, int month, int year, Pageable paginacao) {
-        return venueRepository.findConfirmedEventsByVenueAndDate(venueId, month, year, paginacao)
+        User user = authenticationService.getAuthenticatedUser();
+        return venueRepository.findConfirmedEventsByVenueAndDateAndUser(venueId, month, year, user, paginacao)
                 .map(eventMapper::toDTO);
     }
 

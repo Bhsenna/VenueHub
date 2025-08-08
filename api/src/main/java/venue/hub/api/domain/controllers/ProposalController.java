@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import venue.hub.api.domain.dtos.page.PageResponse;
@@ -20,6 +22,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/proposals")
+@EnableWebSecurity
 public class ProposalController {
 
     @Autowired
@@ -41,7 +44,7 @@ public class ProposalController {
     public ResponseEntity<PageResponse<ProposalResponseDTO>> getAllProposals(
             @PageableDefault(size = 10, sort = {"id"}) Pageable paginacao
     ) {
-        var proposalPage = proposalService.getAllProposals(paginacao);
+        var proposalPage = proposalService.getAllProposalsByUser(paginacao);
         List<ProposalResponseDTO> proposals = proposalPage.getContent();
 
         return ResponseEntity.ok(
@@ -53,6 +56,7 @@ public class ProposalController {
         );
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<ProposalResponseDTO> getProposalById(@PathVariable Long id) {
         ProposalResponseDTO response = proposalService.getProposalById(id);
@@ -60,6 +64,7 @@ public class ProposalController {
     }
 
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/venues/{id}/status")
     public ResponseEntity<PageResponse<ProposalResponseDTO>> getProposalByVenueAndStatus(
             @PathVariable Long id,
@@ -78,6 +83,7 @@ public class ProposalController {
         );
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/venues/{id}")
     public ResponseEntity<PageResponse<ProposalResponseDTO>> getProposalByVenue(
             @PathVariable Long id,
@@ -95,6 +101,8 @@ public class ProposalController {
         );
     }
 
+
+    @PreAuthorize("hasRole('CLIENT')")
     @PutMapping("/{id}")
     public ResponseEntity<ProposalResponseDTO> updateProposal(
             @PathVariable Long id,
@@ -104,6 +112,7 @@ public class ProposalController {
         return ResponseEntity.ok(response);
     }
 
+    @PreAuthorize("hasRole('CLIENT')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProposal(@PathVariable Long id) {
         proposalService.deleteProposal(id);
