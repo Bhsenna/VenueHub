@@ -18,8 +18,9 @@ import venue.hub.api.domain.entities.VenueAdditionalId;
 import venue.hub.api.domain.repositories.AddressRepository;
 import venue.hub.api.domain.repositories.VenueAdditionalRepository;
 import venue.hub.api.domain.repositories.VenueRepository;
+import venue.hub.api.domain.validators.address.AddressValidator;
 import venue.hub.api.infra.exceptions.VenueAdditionalNotFound;
-import venue.hub.api.infra.exceptions.VenueNotFound;
+import venue.hub.api.infra.exceptions.VenueNotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,14 +29,16 @@ import java.util.List;
 public class VenueService {
 
     @Autowired
-    private VenueRepository venueRepository;
+    VenueRepository venueRepository;
 
     @Autowired
-    private VenueMapper venueMapper;
+    AddressRepository addressRepository;
 
     @Autowired
-    private AddressRepository addressRepository;
+    VenueMapper venueMapper;
 
+    @Autowired
+    List<AddressValidator> addressValidators;
     @Autowired
     private AdditionalService addicionalService;
 
@@ -43,15 +46,18 @@ public class VenueService {
     private VenueAdditionalRepository venueAdditionalRepository;
 
     @Transactional
-    public VenueResponseDTO createVenue(VenueRequestDTO venueRequestDTO) {
-        Venue venue = venueMapper.toEntity(venueRequestDTO);
+    public VenueResponseDTO createVenue(VenueRequestDTO requestDTO){
+
+        addressValidators.forEach(v -> v.validate(requestDTO.getAddress()));
+
+        Venue venue = venueMapper.toEntity(requestDTO);
 
         addressRepository.save(venue.getAddress());
         venueRepository.save(venue);
 
-        if (venueRequestDTO.getAdditionals() != null) {
+        if (requestDTO.getAdditionals() != null) {
             List<VenueAdditional> additionalList = new ArrayList<>();
-            for (VenueAdditionalRequestDTO additionalDTO : venueRequestDTO.getAdditionals()) {
+            for (VenueAdditionalRequestDTO additionalDTO : requestDTO.getAdditionals()) {
                 Additional additional = addicionalService.findById(additionalDTO.getAdditionalId());
 
                 VenueAdditional venueAdditional = createVenueAdditional(venue, additional, additionalDTO.getValor());
@@ -70,13 +76,13 @@ public class VenueService {
     }
 
     public VenueResponseDTO getVenueById(Long id) {
-        var venue = findById(id);
+        var venue = this.findById(id);
 
         return venueMapper.toDTO(venue);
     }
 
     public VenueResponseDTO updateVenue(Long id, VenueUpdateDTO updateDTO) {
-        var venue = findById(id);
+        var venue = this.findById(id);
         venue.update(updateDTO);
 
         addressRepository.save(venue.getAddress());
@@ -85,14 +91,14 @@ public class VenueService {
     }
 
     public void deleteVenue(Long id) {
-        Venue venue = findById(id);
+        Venue venue = this.findById(id);
         venue.setAtivo(false);
         venueRepository.save(venue);
     }
 
     public Venue findById(Long id) {
         return venueRepository.findById(id)
-                .orElseThrow(() -> new VenueNotFound(HttpStatus.NOT_FOUND, "Local não encontrado com o id: " + id));
+                .orElseThrow(() -> new VenueNotFoundException(HttpStatus.NOT_FOUND, "Local não encontrado com o id: " + id));
     }
 
     public VenueResponseDTO updateVenueAdditionals(Long venueId, List<VenueAdditionalRequestDTO> additionals) {
