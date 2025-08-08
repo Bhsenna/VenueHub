@@ -8,9 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import venue.hub.api.domain.dtos.page.PageResponse;
-import venue.hub.api.domain.dtos.user.UserRequestDTO;
-import venue.hub.api.domain.dtos.user.UserResponseDTO;
-import venue.hub.api.domain.dtos.user.UserUpdateDTO;
+import venue.hub.api.domain.dtos.user.*;
 import venue.hub.api.domain.services.UserService;
 
 import java.util.List;
@@ -22,7 +20,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PostMapping("/create")
+    @PostMapping("/auth/create")
     public ResponseEntity<UserResponseDTO> createUser(
             @RequestBody @Valid UserRequestDTO requestDTO,
             UriComponentsBuilder uriBuilder
@@ -31,6 +29,12 @@ public class UserController {
         var uri = uriBuilder.path("/api/v1/users/{id}").buildAndExpand(user.getId()).toUri();
 
         return ResponseEntity.created(uri).body(user);
+    }
+
+    @PostMapping("/auth/login")
+    public ResponseEntity<TokenDTO> login(@Valid @RequestBody UserLoginDTO dto) {
+        TokenDTO token = userService.login(dto);
+        return ResponseEntity.ok(token);
     }
 
     @GetMapping("/all")
