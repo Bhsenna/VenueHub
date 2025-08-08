@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 import org.hibernate.query.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,8 +16,11 @@ import venue.hub.api.domain.dtos.page.PageResponse;
 import venue.hub.api.domain.dtos.proposal.ProposalRequestDTO;
 import venue.hub.api.domain.dtos.proposal.ProposalResponseDTO;
 import venue.hub.api.domain.dtos.proposal.ProposalUpdateDTO;
+import venue.hub.api.domain.entities.Proposal;
+import venue.hub.api.domain.enums.Status;
 import venue.hub.api.domain.enums.Status;
 import venue.hub.api.domain.services.ProposalService;
+import venue.hub.api.domain.specification.ProposalSpecification;
 
 import java.util.List;
 
@@ -42,9 +46,14 @@ public class ProposalController {
 
     @GetMapping("/all")
     public ResponseEntity<PageResponse<ProposalResponseDTO>> getAllProposals(
-            @PageableDefault(size = 10, sort = {"id"}) Pageable paginacao
+            @PageableDefault(size = 10, sort = {"id"}) Pageable paginacao,
+            @RequestParam(value = "status", required = false) Status status
     ) {
-        var proposalPage = proposalService.getAllProposalsByUser(paginacao);
+        Specification<Proposal> spec = Specification.allOf(
+                ProposalSpecification.comStatus(status)
+        );
+
+        var proposalPage = proposalService.getAllProposalsByUser(spec, paginacao);
         List<ProposalResponseDTO> proposals = proposalPage.getContent();
 
         return ResponseEntity.ok(
@@ -54,6 +63,24 @@ public class ProposalController {
                         .currentPageData(proposals)
                         .build()
         );
+    }
+
+    @PatchMapping("/aceita/{id}")
+    public ResponseEntity<ProposalResponseDTO> aceitaProposal(@PathVariable Long id) {
+        ProposalResponseDTO response = proposalService.aceitaProposal(id);
+        return ResponseEntity.ok(response);
+    }
+
+    @PatchMapping("/recusa/{id}")
+    public ResponseEntity<ProposalResponseDTO> recusaProposal(@PathVariable Long id) {
+        ProposalResponseDTO response = proposalService.recusaProposal(id);
+        return ResponseEntity.ok(response);
+    }
+
+    @PatchMapping("/confirma/{id}")
+    public ResponseEntity<ProposalResponseDTO> confirmaProposal(@PathVariable Long id) {
+        ProposalResponseDTO response = proposalService.confirmaProposal(id);
+        return ResponseEntity.ok(response);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -114,10 +141,9 @@ public class ProposalController {
 
     @PreAuthorize("hasRole('CLIENT')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProposal(@PathVariable Long id) {
-        proposalService.deleteProposal(id);
-
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<ProposalResponseDTO> deleteProposal(@PathVariable Long id) {
+        ProposalResponseDTO response = proposalService.deleteProposal(id);
+        return ResponseEntity.ok(response);
     }
 
 

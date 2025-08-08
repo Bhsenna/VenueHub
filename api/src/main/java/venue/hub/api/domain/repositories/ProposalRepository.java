@@ -2,18 +2,21 @@ package venue.hub.api.domain.repositories;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import venue.hub.api.domain.entities.Event;
 import venue.hub.api.domain.entities.Proposal;
+import venue.hub.api.domain.entities.User;
 import venue.hub.api.domain.entities.Venue;
+import venue.hub.api.domain.enums.Status;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import venue.hub.api.domain.entities.User;
-import venue.hub.api.domain.enums.Status;
+import java.util.List;
 
 public interface ProposalRepository extends JpaRepository<Proposal, Long> {
-    Page<Proposal> findAll(Pageable paginacao);
+    Page<Proposal> findAll(Specification<Proposal> spec, Pageable paginacao);
 
     @Query(value = """
             SELECT count(p.id) > 0
@@ -22,7 +25,7 @@ public interface ProposalRepository extends JpaRepository<Proposal, Long> {
             WHERE
             p.venue = :venue
             AND
-            p.status IN (ACEITO, CONCLUIDO)
+            p.status IN (ACEITO, CONFIRMADO)
             AND
             e.dataInicio <= :dataFim
             AND
@@ -34,19 +37,23 @@ public interface ProposalRepository extends JpaRepository<Proposal, Long> {
             """)
     boolean findOcupado(Venue venue, LocalDate dataInicio, LocalDate dataFim, LocalTime horaInicio, LocalTime horaFim);
 
+    List<Proposal> findAllByStatusNotIn(List<Status> notStatus);
+
+    List<Proposal> findAllByEventAndStatusNotIn(Event event, List<Status> endStatus);
+
     @Query(value = """
             SELECT p FROM Proposal p
             JOIN Event e ON p.event = e
             WHERE e.user = :user\s
            \s""")
-    Page<Proposal> findAllByClient(User user, Pageable paginacao);
+    Page<Proposal> findAllByClient(User user, Specification<Proposal> spec, Pageable paginacao);
 
     @Query(value = """
             SELECT p FROM Proposal p
             JOIN Venue v ON p.venue = v
             WHERE v.user = :user\s
            \s""")
-    Page<Proposal> findAllByOwner(User user, Pageable paginacao);
+    Page<Proposal> findAllByOwner(User user, Specification<Proposal> spec, Pageable paginacao);
 
     Page<Proposal> findByVenueId(Long id, Pageable paginacao);
 
