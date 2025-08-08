@@ -10,13 +10,11 @@ import venue.hub.api.domain.dtos.mapper.VenueMapper;
 import venue.hub.api.domain.dtos.venue.VenueRequestDTO;
 import venue.hub.api.domain.dtos.venue.VenueResponseDTO;
 import venue.hub.api.domain.dtos.venue.VenueUpdateDTO;
-import venue.hub.api.domain.entities.User;
 import venue.hub.api.domain.dtos.venueadditional.VenueAdditionalRequestDTO;
 import venue.hub.api.domain.entities.Additional;
 import venue.hub.api.domain.entities.Venue;
 import venue.hub.api.domain.entities.VenueAdditional;
 import venue.hub.api.domain.entities.VenueAdditionalId;
-import venue.hub.api.domain.repositories.AdditionalRepository;
 import venue.hub.api.domain.repositories.AddressRepository;
 import venue.hub.api.domain.repositories.VenueAdditionalRepository;
 import venue.hub.api.domain.repositories.VenueRepository;
@@ -39,14 +37,10 @@ public class VenueService {
     private AddressRepository addressRepository;
 
     @Autowired
-    private AdditionalRepository additionalRepository;
+    private AdditionalService addicionalService;
 
     @Autowired
     private VenueAdditionalRepository venueAdditionalRepository;
-
-    @Autowired
-    private AdditionalService addicionalService;
-
 
     @Transactional
     public VenueResponseDTO createVenue(VenueRequestDTO venueRequestDTO) {
@@ -61,6 +55,7 @@ public class VenueService {
                 Additional additional = addicionalService.findById(additionalDTO.getAdditionalId());
 
                 VenueAdditional venueAdditional = createVenueAdditional(venue, additional, additionalDTO.getValor());
+                new VenueAdditional();
 
                 additionalList.add(venueAdditional);
             }
@@ -137,5 +132,4 @@ public class VenueService {
         venueAdditionalRepository.deleteAll(toRemove);
         venue.getAdditionals().removeAll(toRemove);
     }
-
 }

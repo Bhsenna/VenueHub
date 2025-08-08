@@ -7,6 +7,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
+import venue.hub.api.domain.dtos.page.PageResponse;
 import venue.hub.api.domain.dtos.venue.VenueRequestDTO;
 import venue.hub.api.domain.dtos.venue.VenueResponseDTO;
 import venue.hub.api.domain.dtos.venue.VenueUpdateDTO;
@@ -82,4 +83,5 @@ public class VenueController {
         venueService.removeAdditionalFromVenue(venueId, additionalIds);
         return ResponseEntity.noContent().build();
     }
+
 }
