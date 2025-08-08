@@ -9,6 +9,8 @@ import venue.hub.api.domain.entities.Venue;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import venue.hub.api.domain.entities.User;
+import venue.hub.api.domain.enums.Status;
 
 public interface ProposalRepository extends JpaRepository<Proposal, Long> {
     Page<Proposal> findAll(Pageable paginacao);
@@ -31,4 +33,22 @@ public interface ProposalRepository extends JpaRepository<Proposal, Long> {
             e.horaFim > :horaInicio
             """)
     boolean findOcupado(Venue venue, LocalDate dataInicio, LocalDate dataFim, LocalTime horaInicio, LocalTime horaFim);
+
+    @Query(value = """
+            SELECT p FROM Proposal p
+            JOIN Event e ON p.event = e
+            WHERE e.user = :user\s
+           \s""")
+    Page<Proposal> findAllByClient(User user, Pageable paginacao);
+
+    @Query(value = """
+            SELECT p FROM Proposal p
+            JOIN Venue v ON p.venue = v
+            WHERE v.user = :user\s
+           \s""")
+    Page<Proposal> findAllByOwner(User user, Pageable paginacao);
+
+    Page<Proposal> findByVenueId(Long id, Pageable paginacao);
+
+    Page<Proposal> findByVenueIdAndStatus(Long id, Status status, Pageable paginacao);
 }

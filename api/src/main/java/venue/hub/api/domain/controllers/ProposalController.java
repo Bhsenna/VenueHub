@@ -7,18 +7,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import venue.hub.api.domain.dtos.page.PageResponse;
 import venue.hub.api.domain.dtos.proposal.ProposalRequestDTO;
 import venue.hub.api.domain.dtos.proposal.ProposalResponseDTO;
 import venue.hub.api.domain.dtos.proposal.ProposalUpdateDTO;
+import venue.hub.api.domain.enums.Status;
 import venue.hub.api.domain.services.ProposalService;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/proposals")
+@EnableWebSecurity
 public class ProposalController {
 
     @Autowired
@@ -40,7 +44,7 @@ public class ProposalController {
     public ResponseEntity<PageResponse<ProposalResponseDTO>> getAllProposals(
             @PageableDefault(size = 10, sort = {"id"}) Pageable paginacao
     ) {
-        var proposalPage = proposalService.getAllProposals(paginacao);
+        var proposalPage = proposalService.getAllProposalsByUser(paginacao);
         List<ProposalResponseDTO> proposals = proposalPage.getContent();
 
         return ResponseEntity.ok(
@@ -52,12 +56,53 @@ public class ProposalController {
         );
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<ProposalResponseDTO> getProposalById(@PathVariable Long id) {
         ProposalResponseDTO response = proposalService.getProposalById(id);
         return ResponseEntity.ok(response);
     }
 
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/venues/{id}/status")
+    public ResponseEntity<PageResponse<ProposalResponseDTO>> getProposalByVenueAndStatus(
+            @PathVariable Long id,
+            @RequestParam Status status,
+            @PageableDefault(size = 10, sort = {"id"}) Pageable paginacao) {
+
+        var proposalPage = proposalService.getProposalsByVenueIdAndStatus(id, status, paginacao);
+        List<ProposalResponseDTO> proposals = proposalPage.getContent();
+
+        return ResponseEntity.ok(
+                PageResponse.<ProposalResponseDTO>builder()
+                        .totalPages(proposalPage.getTotalPages())
+                        .totalElements(proposalPage.getTotalElements())
+                        .currentPageData(proposals)
+                        .build()
+        );
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/venues/{id}")
+    public ResponseEntity<PageResponse<ProposalResponseDTO>> getProposalByVenue(
+            @PathVariable Long id,
+            @PageableDefault(size = 10, sort = {"id"}) Pageable paginacao) {
+
+        var proposalPage = proposalService.getProposalsByVenueId(id, paginacao);
+        List<ProposalResponseDTO> proposals = proposalPage.getContent();
+
+        return ResponseEntity.ok(
+                PageResponse.<ProposalResponseDTO>builder()
+                        .totalPages(proposalPage.getTotalPages())
+                        .totalElements(proposalPage.getTotalElements())
+                        .currentPageData(proposals)
+                        .build()
+        );
+    }
+
+
+    @PreAuthorize("hasRole('CLIENT')")
     @PutMapping("/{id}")
     public ResponseEntity<ProposalResponseDTO> updateProposal(
             @PathVariable Long id,
@@ -67,6 +112,7 @@ public class ProposalController {
         return ResponseEntity.ok(response);
     }
 
+    @PreAuthorize("hasRole('CLIENT')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProposal(@PathVariable Long id) {
         proposalService.deleteProposal(id);
