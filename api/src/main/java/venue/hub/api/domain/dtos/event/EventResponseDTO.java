@@ -3,6 +3,7 @@ package venue.hub.api.domain.dtos.event;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import venue.hub.api.domain.dtos.additional.AdditionalResponseDTO;
 import venue.hub.api.domain.dtos.user.UserResponseDTO;
 import venue.hub.api.domain.entities.Additional;
 import venue.hub.api.domain.entities.User;
@@ -26,5 +27,5 @@ public class EventResponseDTO {
     private LocalTime horaFim;
 
     private UserResponseDTO user;
-    private List<Additional> additionals;
+    private List<AdditionalResponseDTO> additionals;
 }

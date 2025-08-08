@@ -35,7 +35,7 @@ public class Event {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(
             name = "event_additionals",
             joinColumns = @JoinColumn(name = "event_id"),

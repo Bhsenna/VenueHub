@@ -7,6 +7,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
+import venue.hub.api.domain.dtos.additional.AdditionalRequestDTO;
 import venue.hub.api.domain.dtos.event.EventRequestDTO;
 import venue.hub.api.domain.dtos.event.EventResponseDTO;
 import venue.hub.api.domain.dtos.event.EventUpdateDTO;
@@ -68,5 +69,23 @@ public class EventController {
     public ResponseEntity<Void> deleteEvent(@PathVariable Long id) {
         eventService.deleteEvent(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/additionals/{id}")
+    public ResponseEntity<EventResponseDTO> addAdditionalsToEvent(
+            @PathVariable Long id,
+            @RequestBody List<AdditionalRequestDTO> additionals
+    ) {
+        EventResponseDTO updatedEvent = eventService.addAdditionalsToEvent(id, additionals);
+        return ResponseEntity.ok(updatedEvent);
+    }
+
+    @PatchMapping("/additionals/{id}/remove")
+    public ResponseEntity<EventResponseDTO> removeAdditionalsFromEvent(
+            @PathVariable Long id,
+            @RequestBody List<AdditionalRequestDTO> additionals
+    ) {
+        EventResponseDTO updatedEvent = eventService.removeAdditionalsFromEvent(id, additionals);
+        return ResponseEntity.ok(updatedEvent);
     }
 }

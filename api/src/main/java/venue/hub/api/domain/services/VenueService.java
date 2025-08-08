@@ -39,14 +39,15 @@ public class VenueService {
 
     @Autowired
     List<AddressValidator> addressValidators;
-    @Autowired
-    private AdditionalService addicionalService;
 
     @Autowired
-    private VenueAdditionalRepository venueAdditionalRepository;
+    AdditionalService additionalService;
+
+    @Autowired
+    VenueAdditionalRepository venueAdditionalRepository;
 
     @Transactional
-    public VenueResponseDTO createVenue(VenueRequestDTO requestDTO){
+    public VenueResponseDTO createVenue(VenueRequestDTO requestDTO) {
 
         addressValidators.forEach(v -> v.validate(requestDTO.getAddress()));
 
@@ -58,10 +59,9 @@ public class VenueService {
         if (requestDTO.getAdditionals() != null) {
             List<VenueAdditional> additionalList = new ArrayList<>();
             for (VenueAdditionalRequestDTO additionalDTO : requestDTO.getAdditionals()) {
-                Additional additional = addicionalService.findById(additionalDTO.getAdditionalId());
+                Additional additional = additionalService.findById(additionalDTO.getAdditionalId());
 
                 VenueAdditional venueAdditional = createVenueAdditional(venue, additional, additionalDTO.getValor());
-                new VenueAdditional();
 
                 additionalList.add(venueAdditional);
             }
@@ -106,7 +106,7 @@ public class VenueService {
 
         List<VenueAdditional> venueAdditionals = new ArrayList<>();
         for (VenueAdditionalRequestDTO additionalDTO : additionals) {
-            Additional additional = addicionalService.findById(additionalDTO.getAdditionalId());
+            Additional additional = additionalService.findById(additionalDTO.getAdditionalId());
 
             VenueAdditional venueAdditional = createVenueAdditional(venue, additional, additionalDTO.getValor());
 

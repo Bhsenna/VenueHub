@@ -1,21 +1,28 @@
 package venue.hub.api.domain.services;
 
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import venue.hub.api.domain.dtos.additional.AdditionalRequestDTO;
 import venue.hub.api.domain.dtos.event.EventRequestDTO;
 import venue.hub.api.domain.dtos.event.EventResponseDTO;
 import venue.hub.api.domain.dtos.event.EventUpdateDTO;
 import venue.hub.api.domain.dtos.mapper.EventMapper;
+import venue.hub.api.domain.entities.Additional;
 import venue.hub.api.domain.entities.Event;
+import venue.hub.api.domain.repositories.AdditionalRepository;
 import venue.hub.api.domain.repositories.EventRepository;
 import venue.hub.api.domain.validators.event.EventValidator;
+import venue.hub.api.infra.exceptions.AdditionalAlreadyAddedException;
+import venue.hub.api.infra.exceptions.AdditionalNotFoundException;
 import venue.hub.api.infra.exceptions.EventNotFoundException;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -28,12 +35,28 @@ public class EventService {
     EventMapper eventMapper;
 
     @Autowired
+    AdditionalRepository additionalRepository;
+
+    @Autowired
     List<EventValidator> eventValidators;
 
+    @Transactional
     public EventResponseDTO createEvent(EventRequestDTO requestDTO) {
         eventValidators.forEach(v -> v.validate(requestDTO));
 
+        List<Additional> additionals = new ArrayList<>();
+        if (requestDTO.getAdditionals() != null) {
+            for (AdditionalRequestDTO additionalDto : requestDTO.getAdditionals()) {
+                Additional additional = additionalRepository.findByNome(additionalDto.getNome());
+                if (additional == null) {
+                    throw new AdditionalNotFoundException("Additional não encontrado: " + additionalDto.getNome(), HttpStatus.NOT_FOUND);
+                }
+                additionals.add(additional);
+            }
+        }
+
         Event event = eventMapper.toEntity(requestDTO);
+        event.setAdditionals(additionals);
 
         eventRepository.save(event);
 
@@ -68,5 +91,47 @@ public class EventService {
     public Event findById(Long id) {
         return eventRepository.findById(id)
                 .orElseThrow(() -> new EventNotFoundException(HttpStatus.NOT_FOUND, "Evento não encontrado com o id: " + id));
+    }
+
+    public EventResponseDTO addAdditionalsToEvent(Long id, List<AdditionalRequestDTO> additionals) {
+        var event = this.findById(id);
+
+        List<Additional> additionalEntities = new ArrayList<>();
+        for (AdditionalRequestDTO additionalDto : additionals) {
+            Additional additional = additionalRepository.findByNome(additionalDto.getNome());
+            if (additional == null) {
+                throw new AdditionalNotFoundException("Additional não encontrado: " + additionalDto.getNome(), HttpStatus.NOT_FOUND);
+            }
+            if (event.getAdditionals().contains(additional)) {
+                throw new AdditionalAlreadyAddedException(
+                        "Additional já adicionado ao evento: " + additionalDto.getNome(), HttpStatus.BAD_REQUEST);
+            }
+            additionalEntities.add(additional);
+        }
+
+        event.getAdditionals().addAll(additionalEntities);
+        eventRepository.save(event);
+
+        return eventMapper.toDTO(event);
+    }
+
+    public EventResponseDTO removeAdditionalsFromEvent(Long id, List<AdditionalRequestDTO> additionals) {
+        var event = this.findById(id);
+
+        for (AdditionalRequestDTO additionalDto : additionals) {
+            Additional additional = additionalRepository.findByNome(additionalDto.getNome());
+            if (additional == null) {
+                throw new AdditionalNotFoundException("Additional não encontrado: " + additionalDto.getNome(), HttpStatus.NOT_FOUND);
+            }
+            if (!event.getAdditionals().contains(additional)) {
+                throw new AdditionalNotFoundException(
+                        "Additional não está associado ao evento: " + additionalDto.getNome(), HttpStatus.BAD_REQUEST);
+            }
+            event.getAdditionals().remove(additional);
+        }
+
+        eventRepository.save(event);
+
+        return eventMapper.toDTO(event);
     }
 }
