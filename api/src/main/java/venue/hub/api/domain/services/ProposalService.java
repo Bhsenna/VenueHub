@@ -76,7 +76,7 @@ public class ProposalService {
                         .map(proposalMapper::toDTO);
             }
             case CLIENT -> {
-                proposalRepository.findAllByClient(user, spec, paginacao)
+                return proposalRepository.findAllByClient(user, spec, paginacao)
                         .map(proposalMapper::toDTO);
             }
             case ADMIN -> {
@@ -86,10 +86,6 @@ public class ProposalService {
                 return null;
             }
         }
-
-        Page<Proposal> proposals = proposalRepository.findAllByClient(user, paginacao);
-
-        return proposals.map(proposalMapper::toDTO);
     }
 
 
