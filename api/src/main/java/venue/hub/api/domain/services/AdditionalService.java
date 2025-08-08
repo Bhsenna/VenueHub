@@ -41,7 +41,7 @@ public class AdditionalService {
         return additionalMapper.toDTO(additional);
     }
 
-    private Additional findById(Long id) {
+    public Additional findById(Long id) {
         return additionalRepository.findById(id)
                 .orElseThrow(() -> new AdditionalNotFoundException("Adicional não encontrado com o id: " + id, HttpStatus.NOT_FOUND));
     }

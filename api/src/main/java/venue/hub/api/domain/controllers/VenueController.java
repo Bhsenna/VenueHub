@@ -11,7 +11,7 @@ import venue.hub.api.domain.dtos.page.PageResponse;
 import venue.hub.api.domain.dtos.venue.VenueRequestDTO;
 import venue.hub.api.domain.dtos.venue.VenueResponseDTO;
 import venue.hub.api.domain.dtos.venue.VenueUpdateDTO;
-import venue.hub.api.domain.dtos.venueadditional.PatchVenueAdditionalsRequestDTO;
+import venue.hub.api.domain.dtos.venueadditional.VenueAdditionalRequestDTO;
 import venue.hub.api.domain.services.VenueService;
 
 import java.util.List;
@@ -24,7 +24,7 @@ public class VenueController {
     private VenueService venueService;
 
     @PostMapping("/create")
-    public ResponseEntity<VenueResponseDTO> createVenue(@RequestBody @Valid VenueRequestDTO requestDTO, UriComponentsBuilder uriBuilder){
+    public ResponseEntity<VenueResponseDTO> createVenue(@RequestBody @Valid VenueRequestDTO requestDTO, UriComponentsBuilder uriBuilder) {
         var venue = venueService.createVenue(requestDTO);
         var uri = uriBuilder.path("/api/v1/venues/{id}").buildAndExpand(venue.getId()).toUri();
 
@@ -66,13 +66,22 @@ public class VenueController {
         return ResponseEntity.noContent().build();
     }
 
-//    @PatchMapping("/{venueId}/additionals")
-//    public ResponseEntity<VenueResponseDTO> updateVenueAdditionals(
-//            @PathVariable Long venueId,
-//            @RequestBody PatchVenueAdditionalsRequestDTO dto) {
-//
-//        VenueResponseDTO response = venueService.updateAdditionals(venueId, dto.getAdditionals());
-//        return ResponseEntity.ok(response);
-//    }
+    @PutMapping("/{venueId}/additionals")
+    public ResponseEntity<VenueResponseDTO> updateVenueAdditionals(
+            @PathVariable Long venueId,
+            @RequestBody List<VenueAdditionalRequestDTO> dto) {
+
+        VenueResponseDTO response = venueService.updateVenueAdditionals(venueId, dto);
+        return ResponseEntity.ok(response);
+    }
+
+    @PatchMapping("/{venueId}/additionals/remove")
+    public ResponseEntity<Void> removeAdditionalFromVenue(
+            @PathVariable Long venueId,
+            @RequestParam(name = "ids") List<Long> additionalIds) {
+
+        venueService.removeAdditionalFromVenue(venueId, additionalIds);
+        return ResponseEntity.noContent().build();
+    }
 
 }

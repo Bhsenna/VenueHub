@@ -15,12 +15,16 @@ import venue.hub.api.domain.dtos.venueadditional.VenueAdditionalRequestDTO;
 import venue.hub.api.domain.entities.Additional;
 import venue.hub.api.domain.entities.Venue;
 import venue.hub.api.domain.entities.VenueAdditional;
+import venue.hub.api.domain.entities.VenueAdditionalId;
 import venue.hub.api.domain.repositories.AdditionalRepository;
 import venue.hub.api.domain.repositories.AddressRepository;
 import venue.hub.api.domain.repositories.VenueAdditionalRepository;
 import venue.hub.api.domain.repositories.VenueRepository;
+import venue.hub.api.infra.exceptions.VenueAdditionalNotFound;
 import venue.hub.api.infra.exceptions.VenueNotFound;
 
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class VenueService {
@@ -40,28 +44,24 @@ public class VenueService {
     @Autowired
     private VenueAdditionalRepository venueAdditionalRepository;
 
-
     @Transactional
     public VenueResponseDTO createVenue(VenueRequestDTO venueRequestDTO) {
         Venue venue = venueMapper.toEntity(venueRequestDTO);
+
         addressRepository.save(venue.getAddress());
         venueRepository.save(venue);
 
         if (venueRequestDTO.getAdditionals() != null) {
+            List<VenueAdditional> additionalList = new ArrayList<>();
             for (VenueAdditionalRequestDTO additionalDTO : venueRequestDTO.getAdditionals()) {
-                Additional additional = additionalRepository.findById(additionalDTO.getAdditionalId())
-                        .orElseThrow(() -> new RuntimeException("Additional não encontrado: " + additionalDTO.getAdditionalId()));
+                Additional additional = addicionalService.findById(additionalDTO.getAdditionalId());
 
-                VenueAdditional va = new VenueAdditional();
-                va.setVenue(venue);
-                va.setAdditional(additional);
-                va.setValor(additionalDTO.getValor());
+                VenueAdditional venueAdditional = createVenueAdditional(venue, additional, additionalDTO.getValor());
 
-                venueAdditionalRepository.save(va);
+                additionalList.add(venueAdditional);
             }
+            venue.setAdditionals(additionalList);
         }
-
-
         return venueMapper.toDTO(venue);
     }
 
@@ -96,5 +96,43 @@ public class VenueService {
                 .orElseThrow(() -> new VenueNotFound(HttpStatus.NOT_FOUND, "Local não encontrado com o id: " + id));
 
         return venueMapper.toDTO(venue);
+    }
+
+    public VenueResponseDTO updateVenueAdditionals(Long venueId, List<VenueAdditionalRequestDTO> additionals) {
+        Venue venue = findById(venueId);
+
+        List<VenueAdditional> venueAdditionals = new ArrayList<>();
+        for (VenueAdditionalRequestDTO additionalDTO : additionals) {
+            Additional additional = addicionalService.findById(additionalDTO.getAdditionalId());
+
+            VenueAdditional venueAdditional = createVenueAdditional(venue, additional, additionalDTO.getValor());
+
+            venueAdditionals.add(venueAdditional);
+        }
+        venueAdditionalRepository.saveAll(venueAdditionals);
+        return venueMapper.toDTO(venue);
+    }
+
+    private VenueAdditional createVenueAdditional(Venue venue, Additional additional, Double valor) {
+        VenueAdditional venueAdditional = new VenueAdditional();
+        venueAdditional.setId(new VenueAdditionalId(venue.getId(), additional.getId()));
+        venueAdditional.setVenue(venue);
+        venueAdditional.setAdditional(additional);
+        venueAdditional.setValor(valor);
+        return venueAdditional;
+    }
+
+    public void removeAdditionalFromVenue(Long venueId, List<Long> additionalIds) {
+        Venue venue = findById(venueId);
+
+        List<VenueAdditional> toRemove = new ArrayList<>();
+        for (Long additionalId : additionalIds) {
+            VenueAdditionalId venueAdditionalId = new VenueAdditionalId(venue.getId(), additionalId);
+            VenueAdditional venueAdditional = venueAdditionalRepository.findById(venueAdditionalId)
+                    .orElseThrow(() -> new VenueAdditionalNotFound("Adicional não encontrado com o id: " + additionalId, HttpStatus.NOT_FOUND));
+            toRemove.add(venueAdditional);
+        }
+        venueAdditionalRepository.deleteAll(toRemove);
+        venue.getAdditionals().removeAll(toRemove);
     }
 }
