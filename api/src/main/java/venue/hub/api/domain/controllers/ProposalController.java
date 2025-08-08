@@ -61,6 +61,24 @@ public class ProposalController {
         );
     }
 
+    @PatchMapping("/aceita/{id}")
+    public ResponseEntity<ProposalResponseDTO> aceitaProposal(@PathVariable Long id) {
+        ProposalResponseDTO response = proposalService.aceitaProposal(id);
+        return ResponseEntity.ok(response);
+    }
+
+    @PatchMapping("/recusa/{id}")
+    public ResponseEntity<ProposalResponseDTO> recusaProposal(@PathVariable Long id) {
+        ProposalResponseDTO response = proposalService.recusaProposal(id);
+        return ResponseEntity.ok(response);
+    }
+
+    @PatchMapping("/confirma/{id}")
+    public ResponseEntity<ProposalResponseDTO> confirmaProposal(@PathVariable Long id) {
+        ProposalResponseDTO response = proposalService.confirmaProposal(id);
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<ProposalResponseDTO> getProposalById(@PathVariable Long id) {
         ProposalResponseDTO response = proposalService.getProposalById(id);
@@ -72,15 +90,13 @@ public class ProposalController {
             @PathVariable Long id,
             @RequestBody @Valid ProposalUpdateDTO updateDTO) {
         ProposalResponseDTO response = proposalService.updateProposal(id, updateDTO);
-
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProposal(@PathVariable Long id) {
-        proposalService.deleteProposal(id);
-
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<ProposalResponseDTO> deleteProposal(@PathVariable Long id) {
+        ProposalResponseDTO response = proposalService.deleteProposal(id);
+        return ResponseEntity.ok(response);
     }
 
 

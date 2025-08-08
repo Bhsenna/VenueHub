@@ -6,5 +6,5 @@ public enum Status {
     ACEITO,
     EXPIRADO,
     CANCELADO,
-    CONCLUIDO
+    CONFIRMADO
 }
