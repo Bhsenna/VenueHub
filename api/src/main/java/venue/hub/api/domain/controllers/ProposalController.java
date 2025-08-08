@@ -8,6 +8,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import venue.hub.api.domain.dtos.page.PageResponse;
@@ -16,6 +18,7 @@ import venue.hub.api.domain.dtos.proposal.ProposalResponseDTO;
 import venue.hub.api.domain.dtos.proposal.ProposalUpdateDTO;
 import venue.hub.api.domain.entities.Proposal;
 import venue.hub.api.domain.enums.Status;
+import venue.hub.api.domain.enums.Status;
 import venue.hub.api.domain.services.ProposalService;
 import venue.hub.api.domain.specification.ProposalSpecification;
 
@@ -23,6 +26,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/proposals")
+@EnableWebSecurity
 public class ProposalController {
 
     @Autowired
@@ -49,7 +53,7 @@ public class ProposalController {
                 ProposalSpecification.comStatus(status)
         );
 
-        var proposalPage = proposalService.getAllProposals(spec, paginacao);
+        var proposalPage = proposalService.getAllProposalsByUser(spec, paginacao);
         List<ProposalResponseDTO> proposals = proposalPage.getContent();
 
         return ResponseEntity.ok(
@@ -79,20 +83,63 @@ public class ProposalController {
         return ResponseEntity.ok(response);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<ProposalResponseDTO> getProposalById(@PathVariable Long id) {
         ProposalResponseDTO response = proposalService.getProposalById(id);
         return ResponseEntity.ok(response);
     }
 
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/venues/{id}/status")
+    public ResponseEntity<PageResponse<ProposalResponseDTO>> getProposalByVenueAndStatus(
+            @PathVariable Long id,
+            @RequestParam Status status,
+            @PageableDefault(size = 10, sort = {"id"}) Pageable paginacao) {
+
+        var proposalPage = proposalService.getProposalsByVenueIdAndStatus(id, status, paginacao);
+        List<ProposalResponseDTO> proposals = proposalPage.getContent();
+
+        return ResponseEntity.ok(
+                PageResponse.<ProposalResponseDTO>builder()
+                        .totalPages(proposalPage.getTotalPages())
+                        .totalElements(proposalPage.getTotalElements())
+                        .currentPageData(proposals)
+                        .build()
+        );
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/venues/{id}")
+    public ResponseEntity<PageResponse<ProposalResponseDTO>> getProposalByVenue(
+            @PathVariable Long id,
+            @PageableDefault(size = 10, sort = {"id"}) Pageable paginacao) {
+
+        var proposalPage = proposalService.getProposalsByVenueId(id, paginacao);
+        List<ProposalResponseDTO> proposals = proposalPage.getContent();
+
+        return ResponseEntity.ok(
+                PageResponse.<ProposalResponseDTO>builder()
+                        .totalPages(proposalPage.getTotalPages())
+                        .totalElements(proposalPage.getTotalElements())
+                        .currentPageData(proposals)
+                        .build()
+        );
+    }
+
+
+    @PreAuthorize("hasRole('CLIENT')")
     @PutMapping("/{id}")
     public ResponseEntity<ProposalResponseDTO> updateProposal(
             @PathVariable Long id,
             @RequestBody @Valid ProposalUpdateDTO updateDTO) {
         ProposalResponseDTO response = proposalService.updateProposal(id, updateDTO);
+
         return ResponseEntity.ok(response);
     }
 
+    @PreAuthorize("hasRole('CLIENT')")
     @DeleteMapping("/{id}")
     public ResponseEntity<ProposalResponseDTO> deleteProposal(@PathVariable Long id) {
         ProposalResponseDTO response = proposalService.deleteProposal(id);

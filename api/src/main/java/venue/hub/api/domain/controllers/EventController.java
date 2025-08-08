@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import venue.hub.api.domain.dtos.additional.AdditionalRequestDTO;
@@ -18,11 +20,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/events")
+@EnableWebSecurity
 public class EventController {
 
     @Autowired
     EventService eventService;
 
+    @PreAuthorize("hasRole('CLIENT')")
     @PostMapping("/create")
     public ResponseEntity<EventResponseDTO> createEvent(
             @RequestBody @Valid EventRequestDTO requestDTO,
@@ -34,6 +38,8 @@ public class EventController {
         return ResponseEntity.created(uri).body(event);
     }
 
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'CLIENT')")
     @GetMapping("/all")
     public ResponseEntity<PageResponse<EventResponseDTO>> getAllEvents(
             @PageableDefault(size = 10, sort = {"id"}) Pageable paginacao
@@ -50,12 +56,15 @@ public class EventController {
         );
     }
 
+
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<EventResponseDTO> getEventById(@PathVariable Long id) {
         EventResponseDTO event = eventService.getEventById(id);
         return ResponseEntity.ok(event);
     }
 
+    @PreAuthorize("hasRole('CLIENT')")
     @PutMapping("/update/{id}")
     public ResponseEntity<EventResponseDTO> updateEvent(
             @PathVariable Long id,
@@ -65,6 +74,7 @@ public class EventController {
         return ResponseEntity.ok(updatedEvent);
     }
 
+    @PreAuthorize("hasRole('CLIENT')")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteEvent(@PathVariable Long id) {
         eventService.deleteEvent(id);

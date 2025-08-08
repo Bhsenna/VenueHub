@@ -14,6 +14,7 @@ import venue.hub.api.domain.dtos.event.EventUpdateDTO;
 import venue.hub.api.domain.dtos.mapper.EventMapper;
 import venue.hub.api.domain.entities.Additional;
 import venue.hub.api.domain.entities.Event;
+import venue.hub.api.domain.entities.User;
 import venue.hub.api.domain.repositories.AdditionalRepository;
 import venue.hub.api.domain.repositories.EventRepository;
 import venue.hub.api.domain.validators.event.EventValidator;
@@ -33,6 +34,9 @@ public class EventService {
 
     @Autowired
     EventMapper eventMapper;
+
+    @Autowired
+    AuthenticationService authenticationService;
 
     @Autowired
     AdditionalRepository additionalRepository;
@@ -64,9 +68,28 @@ public class EventService {
     }
 
     public Page<EventResponseDTO> getAllEvents(Pageable paginacao) {
+        User user = authenticationService.getAuthenticatedUser();
+
+        switch (user.getRole()) {
+            case CLIENT -> {
+                return eventRepository.findByUser(user, paginacao)
+                        .map(eventMapper::toDTO);
+            }
+            case ADMIN -> {
+                return getAllEvents(paginacao);
+            }
+            default -> {
+                return null;
+            }
+        }
+
+    }
+
+    private Page<EventResponseDTO> findAll(Pageable paginacao) {
         return eventRepository.findAllByDataFimAfter(LocalDate.now(), paginacao)
                 .map(eventMapper::toDTO);
     }
+
 
     public EventResponseDTO getEventById(Long id) {
         var event = this.findById(id);
