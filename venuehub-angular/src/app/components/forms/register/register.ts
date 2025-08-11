@@ -34,8 +34,8 @@ export class Register {
       sobrenome: ['', Validators.required],
       login: ['', [Validators.required, Validators.email]],
       senha: ['', [Validators.required, Validators.minLength(8)]],
-      role: ['CLIENT'], 
-      ativo: [true],    
+      role: ['CLIENT'],
+      ativo: [true],
       address: this.fb.group({
         cep: ['', Validators.required],
         logradouro: ['', Validators.required],
@@ -56,8 +56,9 @@ export class Register {
     const registerData = this.registerForm.value;
 
     this.authService.register(registerData).subscribe({
-      next: () => {         
-        this.router.navigate(['/home']);
+      next: () => {
+        console.log('Registro realizado com sucesso!');
+        this.router.navigate(['/login']);
       },
       error: (err) => {
         console.error('Falha no registro', err);
