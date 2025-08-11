@@ -16,14 +16,13 @@ import venue.hub.api.domain.dtos.proposal.ProposalUpdateDTO;
 import venue.hub.api.domain.entities.Proposal;
 import venue.hub.api.domain.entities.User;
 import venue.hub.api.domain.enums.Status;
-import venue.hub.api.domain.enums.Status;
 import venue.hub.api.domain.repositories.ProposalRepository;
+import venue.hub.api.domain.specification.ProposalSpecification;
 import venue.hub.api.domain.validators.proposal.ProposalValidator;
 import venue.hub.api.infra.exceptions.ProposalNotFoundException;
-
+import venue.hub.api.infra.exceptions.UserNotFoundException;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -72,24 +71,14 @@ public class ProposalService {
 
         switch (user.getRole()) {
             case OWNER -> {
-                return proposalRepository.findAllByOwner(user, spec, paginacao)
-                        .map(proposalMapper::toDTO);
+                spec = spec.and(ProposalSpecification.comOwner(user));
             }
             case CLIENT -> {
-                proposalRepository.findAllByClient(user, spec, paginacao)
-                        .map(proposalMapper::toDTO);
-            }
-            case ADMIN -> {
-                return getAllProposals(spec, paginacao);
-            }
-            default -> {
-                return null;
+                spec = spec.and(ProposalSpecification.comClient(user));
             }
         }
 
-        Page<Proposal> proposals = proposalRepository.findAllByClient(user, paginacao);
-
-        return proposals.map(proposalMapper::toDTO);
+        return getAllProposals(spec, paginacao);
     }
 
 
@@ -106,8 +95,6 @@ public class ProposalService {
         return proposalRepository.findByVenueIdAndStatus(id, status, paginacao)
                 .map(proposalMapper::toDTO);
     }
-
-
 
     @Transactional
     public ProposalResponseDTO updateProposal(Long id, ProposalUpdateDTO updateDTO) {
@@ -135,7 +122,12 @@ public class ProposalService {
     @Transactional
     public ProposalResponseDTO aceitaProposal(Long id) {
         Proposal proposal = findById(id);
+        User dono = proposal.getVenue().getUser();
+        User user = authenticationService.getAuthenticatedUser();
 
+        if (dono != user) {
+            throw new UserNotFoundException(HttpStatus.FORBIDDEN, "Credenciais inválidas");
+        }
         if (proposal.getStatus() != Status.PENDENTE) {
             throw new ValidationException("Tentando aceitar proposta que não está pendente (" + proposal.getStatus() + ")");
         }
@@ -148,7 +140,12 @@ public class ProposalService {
     @Transactional
     public ProposalResponseDTO recusaProposal(Long id) {
         Proposal proposal = findById(id);
+        User dono = proposal.getVenue().getUser();
+        User user = authenticationService.getAuthenticatedUser();
 
+        if (dono != user) {
+            throw new UserNotFoundException(HttpStatus.FORBIDDEN, "Credenciais inválidas");
+        }
         if (proposal.getStatus() != Status.PENDENTE) {
             throw new ValidationException("Tentando recusar proposta que não está pendente (" + proposal.getStatus() + ")");
         }
@@ -161,7 +158,12 @@ public class ProposalService {
     @Transactional
     public ProposalResponseDTO confirmaProposal(Long id) {
         Proposal proposal = findById(id);
+        User client = proposal.getEvent().getUser();
+        User user = authenticationService.getAuthenticatedUser();
 
+        if (client != user) {
+            throw new UserNotFoundException(HttpStatus.FORBIDDEN, "Credenciais inválidas");
+        }
         if (proposal.getStatus() != Status.ACEITO) {
             throw new ValidationException("Tentando confirmar proposta que não está aceita (" + proposal.getStatus() + ")");
         }
