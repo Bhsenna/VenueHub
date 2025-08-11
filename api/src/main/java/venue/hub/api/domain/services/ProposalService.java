@@ -18,6 +18,7 @@ import venue.hub.api.domain.entities.User;
 import venue.hub.api.domain.enums.Status;
 import venue.hub.api.domain.enums.Status;
 import venue.hub.api.domain.repositories.ProposalRepository;
+import venue.hub.api.domain.specification.ProposalSpecification;
 import venue.hub.api.domain.validators.proposal.ProposalValidator;
 import venue.hub.api.infra.exceptions.ProposalNotFoundException;
 
@@ -72,20 +73,14 @@ public class ProposalService {
 
         switch (user.getRole()) {
             case OWNER -> {
-                return proposalRepository.findAllByOwner(user, spec, paginacao)
-                        .map(proposalMapper::toDTO);
+                spec = spec.and(ProposalSpecification.comOwner(user));
             }
             case CLIENT -> {
-                return proposalRepository.findAllByClient(user, spec, paginacao)
-                        .map(proposalMapper::toDTO);
-            }
-            case ADMIN -> {
-                return getAllProposals(spec, paginacao);
-            }
-            default -> {
-                return null;
+                spec = spec.and(ProposalSpecification.comClient(user));
             }
         }
+
+        return getAllProposals(spec, paginacao);
     }
 
 
