@@ -1,0 +1,18 @@
+ <h2 mat-dialog-title>Fazer Proposta - {{ data.venueName }}</h2>
+    <mat-dialog-content>
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Valor da proposta</mat-label>
+        <input matInput type="number" formControlName="proposalValue" />
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Mensagem</mat-label>
+        <textarea matInput rows="3" formControlName="message"></textarea>
+      </mat-form-field>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+      <button mat-button (click)="dialogRef.close()">Cancelar</button>
+      <button mat-raised-button color="primary" (click)="sendProposal()">
+        Enviar
+      </button>
+    </mat-dialog-actions>

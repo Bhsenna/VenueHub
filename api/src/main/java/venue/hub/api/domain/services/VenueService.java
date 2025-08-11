@@ -73,7 +73,7 @@ public class VenueService {
 
     }
 
-    private Page<VenueResponseDTO> getAllVenues(Pageable paginacao) {
+    public Page<VenueResponseDTO> getAllVenues(Pageable paginacao) {
         return venueRepository.findAllByAtivoTrue(paginacao)
                 .map(venueMapper::toDTO);
     }
