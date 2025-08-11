@@ -1,13 +1,11 @@
 package venue.hub.api.domain.services;
 
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import venue.hub.api.domain.dtos.mapper.UserMapper;
-import venue.hub.api.domain.dtos.user.UserRequestDTO;
 import venue.hub.api.domain.dtos.user.UserResponseDTO;
 import venue.hub.api.domain.dtos.user.UserUpdateDTO;
 import venue.hub.api.domain.entities.User;

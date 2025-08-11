@@ -49,9 +49,8 @@ public class LoginService {
 
     public UserResponseDTO createUser(UserRequestDTO requestDTO) {
 
-        if (userRepository.findByLogin(requestDTO.getLogin()) != null) {
-            throw new RuntimeException("Usuário já registrado");
-        }
+        addressValidators.forEach(v -> v.validate(requestDTO.getAddress()));
+        userValidators.forEach(v -> v.validate(requestDTO));
 
         addressValidators.forEach(v -> v.validate(requestDTO.getAddress()));
         userValidators.forEach(v -> v.validate(requestDTO));
