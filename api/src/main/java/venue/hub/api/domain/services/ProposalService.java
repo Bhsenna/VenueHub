@@ -16,14 +16,11 @@ import venue.hub.api.domain.dtos.proposal.ProposalUpdateDTO;
 import venue.hub.api.domain.entities.Proposal;
 import venue.hub.api.domain.entities.User;
 import venue.hub.api.domain.enums.Status;
-import venue.hub.api.domain.enums.Status;
 import venue.hub.api.domain.repositories.ProposalRepository;
 import venue.hub.api.domain.validators.proposal.ProposalValidator;
 import venue.hub.api.infra.exceptions.ProposalNotFoundException;
 
-
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -87,7 +84,7 @@ public class ProposalService {
             }
         }
 
-        Page<Proposal> proposals = proposalRepository.findAllByClient(user, paginacao);
+        Page<Proposal> proposals = proposalRepository.findAllByClient(user, spec, paginacao);
 
         return proposals.map(proposalMapper::toDTO);
     }
@@ -106,7 +103,6 @@ public class ProposalService {
         return proposalRepository.findByVenueIdAndStatus(id, status, paginacao)
                 .map(proposalMapper::toDTO);
     }
-
 
 
     @Transactional
