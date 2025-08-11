@@ -1,23 +1,17 @@
 package venue.hub.api.domain.services;
 
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import venue.hub.api.domain.dtos.mapper.UserMapper;
-import venue.hub.api.domain.dtos.user.UserRequestDTO;
 import venue.hub.api.domain.dtos.user.UserResponseDTO;
 import venue.hub.api.domain.dtos.user.UserUpdateDTO;
 import venue.hub.api.domain.entities.User;
 import venue.hub.api.domain.repositories.AddressRepository;
 import venue.hub.api.domain.repositories.UserRepository;
-import venue.hub.api.domain.validators.address.AddressValidator;
-import venue.hub.api.domain.validators.user.UserValidator;
 import venue.hub.api.infra.exceptions.UserNotFoundException;
-
-import java.util.List;
 
 @Service
 public class UserService {
@@ -30,26 +24,6 @@ public class UserService {
 
     @Autowired
     UserMapper userMapper;
-
-    @Autowired
-    List<AddressValidator> addressValidators;
-
-    @Autowired
-    List<UserValidator> userValidators;
-
-    @Transactional
-    public UserResponseDTO createUser(UserRequestDTO requestDTO) {
-
-        addressValidators.forEach(v -> v.validate(requestDTO.getAddress()));
-        userValidators.forEach(v -> v.validate(requestDTO));
-
-        User user = userMapper.toEntity(requestDTO);
-
-        addressRepository.save(user.getAddress());
-        userRepository.save(user);
-
-        return userMapper.toDTO(user);
-    }
 
     public Page<UserResponseDTO> getAllUsers(Pageable paginacao) {
         return userRepository.findAllByAtivoTrue(paginacao)

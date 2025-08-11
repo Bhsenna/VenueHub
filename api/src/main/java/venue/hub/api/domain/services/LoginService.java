@@ -14,7 +14,11 @@ import venue.hub.api.domain.dtos.user.UserResponseDTO;
 import venue.hub.api.domain.entities.User;
 import venue.hub.api.domain.repositories.AddressRepository;
 import venue.hub.api.domain.repositories.UserRepository;
+import venue.hub.api.domain.validators.address.AddressValidator;
+import venue.hub.api.domain.validators.user.UserValidator;
 import venue.hub.api.infra.exceptions.UserNotFoundException;
+
+import java.util.List;
 
 @Service
 public class LoginService {
@@ -37,11 +41,16 @@ public class LoginService {
     @Autowired
     private TokenService tokenService;
 
+    @Autowired
+    List<AddressValidator> addressValidators;
+
+    @Autowired
+    List<UserValidator> userValidators;
+
     public UserResponseDTO createUser(UserRequestDTO requestDTO) {
 
-        if (userRepository.findByLogin(requestDTO.getLogin()) != null) {
-            throw new RuntimeException("Usuário já registrado");
-        }
+        addressValidators.forEach(v -> v.validate(requestDTO.getAddress()));
+        userValidators.forEach(v -> v.validate(requestDTO));
 
         User user = userMapper.toEntity(requestDTO);
         user.setSenha(passwordEncoder.encode(requestDTO.getSenha()));
