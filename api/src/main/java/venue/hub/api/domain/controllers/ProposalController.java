@@ -90,7 +90,6 @@ public class ProposalController {
         return ResponseEntity.ok(response);
     }
 
-
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/venues/{id}/status")
     public ResponseEntity<PageResponse<ProposalResponseDTO>> getProposalByVenueAndStatus(
@@ -145,7 +144,4 @@ public class ProposalController {
         ProposalResponseDTO response = proposalService.deleteProposal(id);
         return ResponseEntity.ok(response);
     }
-
-
-
 }
