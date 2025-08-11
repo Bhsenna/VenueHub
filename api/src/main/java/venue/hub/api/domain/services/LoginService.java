@@ -53,7 +53,6 @@ public class LoginService {
             throw new RuntimeException("Usuário já registrado");
         }
 
-
         addressValidators.forEach(v -> v.validate(requestDTO.getAddress()));
         userValidators.forEach(v -> v.validate(requestDTO));
 
