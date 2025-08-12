@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { VenueService } from '../../services/venue-service';
 import { MatDialog } from '@angular/material/dialog';
-import { VenueResponse } from '../../interfaces/venue-response';
 import { MatCardModule } from '@angular/material/card';
 import { MatIcon } from '@angular/material/icon';
-import { ProposalDialog } from '../proposal-dialog/proposal-dialog';
 import { CommonModule } from '@angular/common';
+import { VenueResponse } from '../../../interfaces/venue-response';
+import { VenueService } from '../../../services/venue-service';
+import { ProposalDialog } from '../../proposal-dialog/proposal-dialog';
 
 @Component({
   selector: 'app-venue-details',
