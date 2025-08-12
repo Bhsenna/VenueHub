@@ -9,6 +9,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
+import venue.hub.api.domain.dtos.event.EventDetailsDTO;
 import venue.hub.api.domain.dtos.event.EventRequestDTO;
 import venue.hub.api.domain.dtos.event.EventResponseDTO;
 import venue.hub.api.domain.dtos.event.EventUpdateDTO;
@@ -55,13 +56,20 @@ public class EventController {
         );
     }
 
-
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<EventResponseDTO> getEventById(@PathVariable Long id) {
         EventResponseDTO event = eventService.getEventById(id);
         return ResponseEntity.ok(event);
     }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/{id}/details")
+    public ResponseEntity<EventDetailsDTO> getEventByIdDetails(@PathVariable Long id) {
+        EventDetailsDTO event = eventService.getEventsDetails(id);
+        return ResponseEntity.ok(event);
+    }
+
 
     @PreAuthorize("hasRole('CLIENT')")
     @PutMapping("/update/{id}")

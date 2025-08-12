@@ -55,10 +55,10 @@ public class LoginService {
     public TokenDTO login(UserLoginDTO dto) {
 
         User user = userRepository.findUserByLogin(dto.login())
-                .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado com o login: " + dto.login(), HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new UserNotFoundException(HttpStatus.NOT_FOUND, "Usuário não encontrado com o login: " + dto.login()));
 
         if (user == null || !passwordEncoder.matches(dto.senha(), user.getPassword())) {
-            throw new UserNotFoundException("Credenciais inválidas", HttpStatus.FORBIDDEN);
+            throw new UserNotFoundException(HttpStatus.FORBIDDEN, "Credenciais inválidas");
         }
 
         var authenticationToken = new UsernamePasswordAuthenticationToken(dto.login(), dto.senha());

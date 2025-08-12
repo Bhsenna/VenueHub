@@ -6,13 +6,18 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import venue.hub.api.domain.dtos.event.EventDetailsDTO;
 import venue.hub.api.domain.dtos.event.EventRequestDTO;
 import venue.hub.api.domain.dtos.event.EventResponseDTO;
 import venue.hub.api.domain.dtos.event.EventUpdateDTO;
 import venue.hub.api.domain.dtos.mapper.EventMapper;
+import venue.hub.api.domain.dtos.proposal.ProposalResponseDTO;
 import venue.hub.api.domain.entities.Event;
+import venue.hub.api.domain.entities.Proposal;
 import venue.hub.api.domain.entities.User;
+import venue.hub.api.domain.enums.Status;
 import venue.hub.api.domain.repositories.EventRepository;
+import venue.hub.api.domain.repositories.ProposalRepository;
 import venue.hub.api.domain.validators.event.EventValidator;
 import venue.hub.api.infra.exceptions.EventNotFoundException;
 
@@ -30,6 +35,9 @@ public class EventService {
 
     @Autowired
     private AuthenticationService authenticationService;
+
+    @Autowired
+    private ProposalRepository proposalRepository;
 
     @Autowired
     List<EventValidator> eventValidators;
@@ -60,6 +68,17 @@ public class EventService {
             }
         }
 
+    }
+
+    public EventDetailsDTO getEventsDetails(Long eventId) {
+
+        EventResponseDTO event = getEventById(eventId);
+        List<Proposal> proposals = proposalRepository.findByEventIdAndStatus(eventId, Status.CONFIRMADO);
+
+        if (proposals.isEmpty()) {
+            return eventMapper.toDTO(event, null, Status.PENDENTE);
+        }
+        return eventMapper.toDTO(event, proposals.get(0).getId(), Status.CONFIRMADO);
     }
 
     private Page<EventResponseDTO> findAll(Pageable paginacao) {

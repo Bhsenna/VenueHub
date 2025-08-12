@@ -57,5 +57,10 @@ public interface ProposalRepository extends JpaRepository<Proposal, Long> {
 
     Page<Proposal> findByVenueId(Long id, Pageable paginacao);
 
+    Page<Proposal> findByEventId(Long id, Pageable paginacao);
+
     Page<Proposal> findByVenueIdAndStatus(Long id, Status status, Pageable paginacao);
+
+    List<Proposal> findByEventIdAndStatus(Long id, Status status);
+
 }
