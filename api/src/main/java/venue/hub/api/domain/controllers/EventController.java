@@ -68,7 +68,6 @@ public class EventController {
         return ResponseEntity.ok(event);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}/details")
     public ResponseEntity<EventDetailsDTO> getEventByIdDetails(@PathVariable Long id) {
         EventDetailsDTO event = eventService.getEventsDetails(id);

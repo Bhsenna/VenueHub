@@ -8,6 +8,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import venue.hub.api.domain.dtos.event.EventDetailsDTO;
 import venue.hub.api.domain.dtos.event.EventRequestDTO;
 import venue.hub.api.domain.dtos.event.EventResponseDTO;
 import venue.hub.api.domain.dtos.event.EventUpdateDTO;
@@ -15,9 +16,12 @@ import venue.hub.api.domain.dtos.eventadditional.EventAdditionalRequestDTO;
 import venue.hub.api.domain.dtos.mapper.EventMapper;
 import venue.hub.api.domain.entities.Additional;
 import venue.hub.api.domain.entities.Event;
+import venue.hub.api.domain.entities.Proposal;
 import venue.hub.api.domain.entities.User;
+import venue.hub.api.domain.enums.Status;
 import venue.hub.api.domain.enums.UserRole;
 import venue.hub.api.domain.repositories.EventRepository;
+import venue.hub.api.domain.repositories.ProposalRepository;
 import venue.hub.api.domain.specification.EventSpecification;
 import venue.hub.api.domain.validators.event.EventValidator;
 import venue.hub.api.infra.exceptions.AdditionalAlreadyAddedException;
@@ -44,6 +48,10 @@ public class EventService {
 
     @Autowired
     List<EventValidator> eventValidators;
+
+    @Autowired
+    private ProposalRepository proposalRepository;
+
 
     @Transactional
     public EventResponseDTO createEvent(EventRequestDTO requestDTO) {
@@ -99,6 +107,18 @@ public class EventService {
 
         return eventMapper.toDTO(event);
     }
+
+    public EventDetailsDTO getEventsDetails(Long eventId) {
+
+        EventResponseDTO event = getEventById(eventId);
+        List<Proposal> proposals = proposalRepository.findByEventIdAndStatus(eventId, Status.CONFIRMADO);
+
+        if (proposals.isEmpty()) {
+            return eventMapper.toDTO(event, null, Status.PENDENTE);
+        }
+        return eventMapper.toDTO(event, proposals.get(0).getId(), Status.CONFIRMADO);
+    }
+
 
     @Transactional
     public EventResponseDTO updateEvent(Long id, EventUpdateDTO updateDTO) {

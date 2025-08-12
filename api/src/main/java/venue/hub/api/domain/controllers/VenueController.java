@@ -43,6 +43,23 @@ public class VenueController {
         return ResponseEntity.created(uri).body(venue);
     }
 
+    @GetMapping
+    public ResponseEntity<PageResponse<VenueResponseDTO>> getVenues(
+            @PageableDefault(size = 10, sort = {"id"}) Pageable paginacao
+    ) {
+
+        var venuePage = venueService.getAll(paginacao);
+        List<VenueResponseDTO> venues = venuePage.getContent();
+
+        return ResponseEntity.ok(
+                PageResponse.<VenueResponseDTO>builder()
+                        .totalPages(venuePage.getTotalPages())
+                        .totalElements(venuePage.getTotalElements())
+                        .currentPageData(venues)
+                        .build()
+        );
+    }
+
     @PreAuthorize("hasAnyRole('ADMIN', 'OWNER')")
     @GetMapping("/all")
     public ResponseEntity<PageResponse<VenueResponseDTO>> getVenuesByOwner(
@@ -64,7 +81,6 @@ public class VenueController {
         );
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'OWNER')")
     @GetMapping("/{id}")
     public ResponseEntity<VenueResponseDTO> getVenueById(@PathVariable Long id) {
         VenueResponseDTO venue = venueService.getVenueById(id);

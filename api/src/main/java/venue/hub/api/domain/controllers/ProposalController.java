@@ -106,7 +106,7 @@ public class ProposalController {
         );
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'OWNER')")
     @GetMapping("/venues/{id}")
     public ResponseEntity<PageResponse<ProposalResponseDTO>> getProposalByVenue(
             @PathVariable Long id,
@@ -124,7 +124,6 @@ public class ProposalController {
         );
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/event/{id}")
     public ResponseEntity<PageResponse<ProposalResponseDTO>> getProposalsByEvent(
             @PathVariable Long id,
@@ -141,7 +140,6 @@ public class ProposalController {
                         .build()
         );
     }
-
 
 
     @PreAuthorize("hasRole('CLIENT')")
