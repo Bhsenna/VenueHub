@@ -43,8 +43,7 @@ export class Login {
     const { login, senha } = this.loginForm.value;
 
     this.authenticationService.login(login, senha).subscribe({
-      next: (response) => {
-        localStorage.setItem('token', response.token);
+      next: () => {
         this.router.navigate(['/home']);
       },
       error: (error) => {
