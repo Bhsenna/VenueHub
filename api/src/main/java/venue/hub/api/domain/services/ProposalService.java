@@ -93,11 +93,23 @@ public class ProposalService {
         return proposalRepository.findByVenueId(id, paginacao)
                 .map(proposalMapper::toDTO);
     }
+    public Page<ProposalResponseDTO> getProposalsByEventId(Long id, Pageable paginacao) {
+        return proposalRepository.findByEventId(id, paginacao)
+                .map(proposalMapper::toDTO);
+    }
+
 
     public Page<ProposalResponseDTO> getProposalsByVenueIdAndStatus(Long id, Status status, Pageable paginacao) {
         return proposalRepository.findByVenueIdAndStatus(id, status, paginacao)
                 .map(proposalMapper::toDTO);
     }
+
+    public List<ProposalResponseDTO> getProposalsByEventIdAndStatus(Long id, Status status) {
+        return proposalRepository.findByEventIdAndStatus(id, status).stream()
+                .map(proposalMapper::toDTO)
+                .toList();
+    }
+
 
     @Transactional
     public ProposalResponseDTO updateProposal(Long id, ProposalUpdateDTO updateDTO) {
