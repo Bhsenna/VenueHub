@@ -1,0 +1,97 @@
+:host {
+  display: block;
+  padding: 24px;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.event-card {
+  margin-bottom: 24px;
+  border-left: 6px solid #3f51b5;
+  border-radius: 8px;
+}
+
+mat-card-title {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #3f51b5;
+}
+
+mat-card-subtitle {
+  font-size: 0.95rem;
+  color: #666;
+}
+.event-card mat-card-title, .event-card mat-card-subtitle{
+    margin-left: 10px;
+}
+
+.section-title {
+  margin: 24px 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #444;
+  border-bottom: 2px solid #e0e0e0;
+  padding-bottom: 4px;
+}
+
+/* Container das propostas */
+.proposals-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.proposal-card {
+  padding: 16px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
+  transition: box-shadow 0.2s ease, transform 0.1s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.proposal-card:hover {
+  box-shadow: 0 6px 20px rgb(0 0 0 / 0.15);
+  transform: translateY(-3px);
+}
+
+mat-card-title {
+  font-size: 1.2rem;
+  margin-bottom: 6px;
+  color: #3f51b5;
+}
+
+mat-card-subtitle {
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #333;
+}
+
+.status-chip {
+  display: inline-block;
+  padding: 3px 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 15px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.status-accepted {
+  background-color: #c8e6c9;
+  color: #256029;
+}
+
+.status-pending {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.status-rejected {
+  background-color: #f8d7da;
+  color: #721c24;
+}

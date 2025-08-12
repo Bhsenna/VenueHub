@@ -1,0 +1,44 @@
+<!-- Card principal do evento -->
+<mat-card class="event-card" *ngIf="event">
+  <mat-card-title>{{ event.tipoEvento }}</mat-card-title>
+  <mat-card-subtitle>
+    {{ event.dataInicio | date:'dd/MM/yyyy' }} - {{ event.dataFim | date:'dd/MM/yyyy' }}
+    <br />
+    <strong>Status do evento:</strong> {{ event.status }}
+  </mat-card-subtitle>
+
+  <mat-card-content>
+    <p><strong>Quantidade de pessoas:</strong> {{ event.qtPessoas }}</p>
+    <p><strong>Horário:</strong> {{ event.horaInicio }} - {{ event.horaFim }}</p>
+  </mat-card-content>
+</mat-card>
+
+<!-- Lista de Propostas -->
+ <div class="section-title">Propostas recebidas</div>
+<div *ngIf="proposals.length > 0; else noProposals" class="proposals-container">
+
+  <mat-card *ngFor="let proposal of proposals" class="proposal-card">
+    <mat-card-title>{{ proposal.venue.nome }}</mat-card-title>
+    <mat-card-subtitle>
+      Valor: <strong>{{ proposal.valor | currency:'BRL':'symbol':'1.2-2' }}</strong>
+    </mat-card-subtitle>
+
+    <mat-card-content>
+      <span
+        class="status-chip"
+        [ngClass]="{
+          'status-accepted': proposal.status === 'ACEITO',
+          'status-pending': proposal.status === 'PENDENTE',
+          'status-rejected': proposal.status === 'REJEITADO'
+        }"
+      >
+        {{ proposal.status | titlecase }}
+      </span>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<!-- Caso não haja propostas -->
+<ng-template #noProposals>
+  <p>Nenhuma proposta recebida para este evento.</p>
+</ng-template>

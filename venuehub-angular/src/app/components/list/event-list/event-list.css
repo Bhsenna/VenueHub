@@ -1,0 +1,21 @@
+.event-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+.event-card {
+  transition: box-shadow 0.3s ease, transform 0.2s ease;
+}
+
+.event-card:hover {
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  transform: translateY(-3px);
+}
+
+mat-icon {
+  font-size: 18px;
+  vertical-align: middle;
+  margin-right: 5px;
+}
