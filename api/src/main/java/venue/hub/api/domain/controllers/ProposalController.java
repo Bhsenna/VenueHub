@@ -141,6 +141,25 @@ public class ProposalController {
         );
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/event/{id}")
+    public ResponseEntity<PageResponse<ProposalResponseDTO>> getProposalsByEvent(
+            @PathVariable Long id,
+            @PageableDefault(size = 10, sort = {"id"}) Pageable paginacao) {
+
+        var proposalPage = proposalService.getProposalsByEventId(id, paginacao);
+        List<ProposalResponseDTO> proposals = proposalPage.getContent();
+
+        return ResponseEntity.ok(
+                PageResponse.<ProposalResponseDTO>builder()
+                        .totalPages(proposalPage.getTotalPages())
+                        .totalElements(proposalPage.getTotalElements())
+                        .currentPageData(proposals)
+                        .build()
+        );
+    }
+
+
 
     @PreAuthorize("hasRole('CLIENT')")
     @PutMapping("/{id}")
