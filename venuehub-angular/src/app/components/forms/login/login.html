@@ -4,7 +4,7 @@
 
         <h2 class="form-title">Login</h2>
 
-        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit($event)">
             <mat-form-field class="full-width">
                 <mat-label>Login</mat-label>
                 <input matInput formControlName="login" required>
