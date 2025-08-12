@@ -9,6 +9,7 @@ import venue.hub.api.domain.enums.Estado;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AddressUpdateDTO {
+
     private String cep;
     private String logradouro;
     private int numero;
@@ -16,4 +17,5 @@ public class AddressUpdateDTO {
     private String bairro;
     private String cidade;
     private Estado estado;
+
 }

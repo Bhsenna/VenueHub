@@ -11,6 +11,7 @@ import lombok.*;
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
 public class VenueAdditional {
+
     @EmbeddedId
     private VenueAdditionalId id;
 

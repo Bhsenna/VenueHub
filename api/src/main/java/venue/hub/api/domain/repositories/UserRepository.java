@@ -11,9 +11,11 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
 
     UserDetails findByLogin(String login);
+
     Optional<User> findUserByLogin(String login);
 
     Page<User> findAllByAtivoTrue(Pageable paginacao);
 
     boolean existsByLogin(String login);
+
 }

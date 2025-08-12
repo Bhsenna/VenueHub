@@ -1,5 +1,8 @@
 package venue.hub.api.domain.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum Estado {
     AC("Acre"),
     AL("Alagoas"),
@@ -35,7 +38,4 @@ public enum Estado {
         this.nome = nome;
     }
 
-    public String getNome() {
-        return nome;
-    }
 }

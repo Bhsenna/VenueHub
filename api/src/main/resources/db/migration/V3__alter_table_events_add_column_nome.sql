@@ -1,0 +1,5 @@
+ALTER TABLE events ADD COLUMN nome VARCHAR(255);
+
+UPDATE events SET nome = 'nome' WHERE nome IS NULL;
+
+ALTER TABLE events ALTER COLUMN nome SET NOT NULL;

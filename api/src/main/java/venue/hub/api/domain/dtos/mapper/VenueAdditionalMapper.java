@@ -13,12 +13,10 @@ public interface VenueAdditionalMapper {
 
     @Mapping(source = "additional.nome", target = "nome")
     VenueAdditionalResponseDTO toDTO(VenueAdditional venueAdditional);
-
     List<VenueAdditionalResponseDTO> toDTO(List<VenueAdditional> venueAdditionals);
 
     @Mapping(source = "additionalId", target = "id.additionalId")
     VenueAdditional toEntity(VenueAdditionalRequestDTO venueAdditionalResponseDTO);
-
     List<VenueAdditional> toEntity(List<VenueAdditionalRequestDTO> venueAdditionalResponseDTO);
 
 }

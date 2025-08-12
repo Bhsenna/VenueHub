@@ -13,6 +13,7 @@ import java.time.LocalTime;
 @NoArgsConstructor
 public class EventUpdateDTO {
 
+    private String nome;
     private TipoEvento tipoEvento;
     private Integer qtPessoas;
     private LocalDate dataInicio;

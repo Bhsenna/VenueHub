@@ -6,13 +6,14 @@ import lombok.NoArgsConstructor;
 import venue.hub.api.domain.dtos.event.EventResponseDTO;
 import venue.hub.api.domain.dtos.venue.VenueResponseDTO;
 import venue.hub.api.domain.enums.Status;
-import java.time.LocalDateTime;
 
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProposalResponseDTO {
+
     private Long id;
 
     private EventResponseDTO event;
@@ -21,4 +22,5 @@ public class ProposalResponseDTO {
 
     private Status status;
     private LocalDateTime dataCriacao;
+
 }

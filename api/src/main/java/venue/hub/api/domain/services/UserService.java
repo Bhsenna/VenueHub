@@ -40,8 +40,8 @@ public class UserService {
 
         user.update(updateDTO);
 
-        addressRepository.save(user.getAddress());
         userRepository.save(user);
+        addressRepository.save(user.getAddress());
 
         return userMapper.toDTO(user);
     }

@@ -1,6 +1,5 @@
 package venue.hub.api.domain.services;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,7 +13,7 @@ import venue.hub.api.domain.repositories.UserRepository;
 public class AuthenticationService implements UserDetailsService {
 
     @Autowired
-    private UserRepository userRepository;
+    UserRepository userRepository;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -24,4 +23,5 @@ public class AuthenticationService implements UserDetailsService {
     public User getAuthenticatedUser(){
         return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
+
 }

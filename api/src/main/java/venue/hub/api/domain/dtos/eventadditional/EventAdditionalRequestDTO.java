@@ -1,4 +1,4 @@
-package venue.hub.api.domain.dtos.proposal;
+package venue.hub.api.domain.dtos.eventadditional;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -9,14 +9,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProposalRequestDTO {
-
-    private Long eventId;
-
-    private Long venueId;
+public class EventAdditionalRequestDTO {
 
     @NotNull
     @Positive
-    private Double valor;
+    private Long additionalId;
 
 }

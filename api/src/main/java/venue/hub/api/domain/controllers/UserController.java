@@ -21,8 +21,7 @@ import java.util.List;
 public class UserController {
 
     @Autowired
-    private UserService userService;
-
+    UserService userService;
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/all")

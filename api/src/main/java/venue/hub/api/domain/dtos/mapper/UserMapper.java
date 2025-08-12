@@ -9,6 +9,7 @@ import venue.hub.api.domain.entities.User;
 public interface UserMapper {
 
     UserResponseDTO toDTO(User user);
+
     User toEntity(UserRequestDTO userRequestDTO);
 
 }

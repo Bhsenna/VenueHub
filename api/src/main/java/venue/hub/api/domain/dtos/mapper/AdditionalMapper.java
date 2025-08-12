@@ -11,4 +11,5 @@ public interface AdditionalMapper {
     AdditionalResponseDTO toDTO(Additional additional);
 
     Additional toEntity(AdditionalRequestDTO additionalRequestDTO);
+
 }

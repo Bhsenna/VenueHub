@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import venue.hub.api.domain.entities.Event;
 import venue.hub.api.domain.entities.Proposal;
-import venue.hub.api.domain.entities.User;
 import venue.hub.api.domain.entities.Venue;
 import venue.hub.api.domain.enums.Status;
 
@@ -16,6 +15,7 @@ import java.time.LocalTime;
 import java.util.List;
 
 public interface ProposalRepository extends JpaRepository<Proposal, Long> {
+
     Page<Proposal> findAll(Specification<Proposal> spec, Pageable paginacao);
 
     @Query(value = """
@@ -44,4 +44,5 @@ public interface ProposalRepository extends JpaRepository<Proposal, Long> {
     Page<Proposal> findByVenueId(Long id, Pageable paginacao);
 
     Page<Proposal> findByVenueIdAndStatus(Long id, Status status, Pageable paginacao);
+
 }

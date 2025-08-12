@@ -16,19 +16,28 @@ public class AddressRequestDTO {
 
     @NotNull @Pattern(regexp = "\\d{8}")
     private String cep;
+
     @NotBlank
     private String logradouro;
-    @NotNull @Positive
+
+    @NotNull
+    @Positive
     private Integer numero;
+
     private String complemento;
+
     @NotBlank
     private String bairro;
+
     @NotBlank
     private String cidade;
+
     @NotNull
     private Estado estado;
+
     @NotNull
     private Double latitude;
+
     @NotNull
     private Double longitude;
 
