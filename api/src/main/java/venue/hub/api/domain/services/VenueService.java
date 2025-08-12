@@ -84,6 +84,11 @@ public class VenueService {
         return venueMapper.toDTO(venue);
     }
 
+    public Page<VenueResponseDTO> getAll(Pageable paginacao) {
+        return venueRepository.findAll(paginacao)
+                .map(venueMapper::toDTO);
+    }
+
     public Page<VenueResponseDTO> getAllVenues(Specification<Venue> spec, Pageable paginacao) {
         User user = authenticationService.getAuthenticatedUser();
 
