@@ -7,9 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AdditionalResponseDTO {
+public class AdditionalUpdateDTO {
 
-    private Long id;
     private String nome;
 
 }

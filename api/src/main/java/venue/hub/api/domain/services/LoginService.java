@@ -33,13 +33,13 @@ public class LoginService {
     UserMapper userMapper;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    PasswordEncoder passwordEncoder;
 
     @Autowired
-    private AuthenticationManager authenticationManager;
+    AuthenticationManager authenticationManager;
 
     @Autowired
-    private TokenService tokenService;
+    TokenService tokenService;
 
     @Autowired
     List<AddressValidator> addressValidators;
@@ -47,7 +47,7 @@ public class LoginService {
     @Autowired
     List<UserValidator> userValidators;
 
-    public UserResponseDTO createUser(UserRequestDTO requestDTO) {
+    public UserResponseDTO register(UserRequestDTO requestDTO) {
 
         addressValidators.forEach(v -> v.validate(requestDTO.getAddress()));
         userValidators.forEach(v -> v.validate(requestDTO));

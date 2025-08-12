@@ -8,20 +8,30 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import venue.hub.api.domain.dtos.address.AddressRequestDTO;
+import venue.hub.api.domain.enums.UserRole;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserRequestDTO {
+
     @NotBlank
     private String nome;
+
     @NotBlank
     private String sobrenome;
+
     @NotBlank
     @Email
     private String login;
+
     @NotBlank
     private String senha;
+
+    @NotNull
+    private UserRole role;
+
     @NotNull @Valid
     private AddressRequestDTO address;
+
 }

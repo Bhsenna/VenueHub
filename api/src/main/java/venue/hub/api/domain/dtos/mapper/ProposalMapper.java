@@ -19,7 +19,6 @@ public interface ProposalMapper {
     @Mapping(source = "eventId", target = "event")
     @Mapping(source = "venueId", target = "venue")
     Proposal toEntity(ProposalRequestDTO proposalRequestDTO);
-
     List<Proposal> toEntity(List<ProposalRequestDTO> proposalRequestDTO);
 
 }

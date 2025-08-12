@@ -22,6 +22,8 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String nome;
+
     @Enumerated(EnumType.STRING)
     private TipoEvento tipoEvento;
 
@@ -44,6 +46,9 @@ public class Event {
     private List<Additional> additionals;
 
     public void update(EventUpdateDTO updateDTO) {
+        if (updateDTO.getNome() != null && !updateDTO.getNome().isBlank()) {
+            this.nome = updateDTO.getNome();
+        }
         if (updateDTO.getTipoEvento() != null) {
             this.tipoEvento = updateDTO.getTipoEvento();
         }

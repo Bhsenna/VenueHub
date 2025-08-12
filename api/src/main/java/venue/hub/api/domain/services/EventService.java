@@ -1,28 +1,29 @@
 package venue.hub.api.domain.services;
 
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
-import venue.hub.api.domain.dtos.additional.AdditionalRequestDTO;
 import venue.hub.api.domain.dtos.event.EventRequestDTO;
 import venue.hub.api.domain.dtos.event.EventResponseDTO;
 import venue.hub.api.domain.dtos.event.EventUpdateDTO;
+import venue.hub.api.domain.dtos.eventadditional.EventAdditionalRequestDTO;
 import venue.hub.api.domain.dtos.mapper.EventMapper;
 import venue.hub.api.domain.entities.Additional;
 import venue.hub.api.domain.entities.Event;
 import venue.hub.api.domain.entities.User;
-import venue.hub.api.domain.repositories.AdditionalRepository;
+import venue.hub.api.domain.enums.UserRole;
 import venue.hub.api.domain.repositories.EventRepository;
+import venue.hub.api.domain.specification.EventSpecification;
 import venue.hub.api.domain.validators.event.EventValidator;
 import venue.hub.api.infra.exceptions.AdditionalAlreadyAddedException;
 import venue.hub.api.infra.exceptions.AdditionalNotFoundException;
 import venue.hub.api.infra.exceptions.EventNotFoundException;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,65 +40,74 @@ public class EventService {
     AuthenticationService authenticationService;
 
     @Autowired
-    AdditionalRepository additionalRepository;
+    AdditionalService additionalService;
 
     @Autowired
     List<EventValidator> eventValidators;
 
     @Transactional
     public EventResponseDTO createEvent(EventRequestDTO requestDTO) {
+
         eventValidators.forEach(v -> v.validate(requestDTO));
 
-        List<Additional> additionals = new ArrayList<>();
-        if (requestDTO.getAdditionals() != null) {
-            for (AdditionalRequestDTO additionalDto : requestDTO.getAdditionals()) {
-                Additional additional = additionalRepository.findByNome(additionalDto.getNome());
-                if (additional == null) {
-                    throw new AdditionalNotFoundException("Additional não encontrado: " + additionalDto.getNome(), HttpStatus.NOT_FOUND);
-                }
-                additionals.add(additional);
-            }
-        }
-
         Event event = eventMapper.toEntity(requestDTO);
-        event.setAdditionals(additionals);
+
+        User user = authenticationService.getAuthenticatedUser();
+        event.setUser(user);
 
         eventRepository.save(event);
+
+        if (requestDTO.getAdditionals() != null) {
+            List<Additional> additionals = new ArrayList<>();
+            for (EventAdditionalRequestDTO additionalDTO : requestDTO.getAdditionals()) {
+                Additional additional = additionalService.findById(additionalDTO.getAdditionalId());
+
+                additionals.add(additional);
+            }
+            event.setAdditionals(additionals);
+        }
 
         return eventMapper.toDTO(event);
     }
 
-    public Page<EventResponseDTO> getAllEvents(Pageable paginacao) {
+    public Page<EventResponseDTO> getAllEvents(Specification<Event> spec, Pageable paginacao) {
         User user = authenticationService.getAuthenticatedUser();
 
         switch (user.getRole()) {
-            case CLIENT -> {
-                return eventRepository.findByUser(user, paginacao)
-                        .map(eventMapper::toDTO);
-            }
-            case ADMIN -> {
-                return getAllEvents(paginacao);
-            }
+            case CLIENT -> spec = spec.and(EventSpecification.comClient(user));
+            case ADMIN -> spec = spec.and(EventSpecification.comClient(null));
             default -> {
                 return null;
             }
         }
 
-    }
-
-    private Page<EventResponseDTO> findAll(Pageable paginacao) {
-        return eventRepository.findAllByDataFimAfter(LocalDate.now(), paginacao)
+        return eventRepository.findAll(spec, paginacao)
                 .map(eventMapper::toDTO);
     }
 
+//    private Page<EventResponseDTO> findAll(Pageable paginacao) {
+//        return eventRepository.findAllByDataFimAfter(LocalDate.now(), paginacao)
+//                .map(eventMapper::toDTO);
+//    }
 
     public EventResponseDTO getEventById(Long id) {
         var event = this.findById(id);
+        var user = authenticationService.getAuthenticatedUser();
+        if (!event.getUser().equals(user) && user.getRole() != UserRole.ADMIN) {
+            throw new AccessDeniedException("Usuário autenticado não é organizador do Evento (" + event.getUser().getLogin() + ")");
+        }
+
         return eventMapper.toDTO(event);
     }
 
-    public EventResponseDTO updateEvent(Long id, @Valid EventUpdateDTO updateDTO) {
+    @Transactional
+    public EventResponseDTO updateEvent(Long id, EventUpdateDTO updateDTO) {
         var event = this.findById(id);
+        var user = authenticationService.getAuthenticatedUser();
+
+        if (!event.getUser().equals(user) && user.getRole() != UserRole.ADMIN) {
+            throw new AccessDeniedException("Usuário autenticado não é organizador do Evento (" + event.getUser().getLogin() + ")");
+        }
 
         event.update(updateDTO);
 
@@ -108,6 +118,11 @@ public class EventService {
 
     public void deleteEvent(Long id) {
         var event = this.findById(id);
+        var user = authenticationService.getAuthenticatedUser();
+
+        if (!event.getUser().equals(user) && user.getRole() != UserRole.ADMIN) {
+            throw new AccessDeniedException("Usuário autenticado não é organizador do Evento (" + event.getUser().getLogin() + ")");
+        }
         eventRepository.delete(event);
     }
 
@@ -116,18 +131,21 @@ public class EventService {
                 .orElseThrow(() -> new EventNotFoundException(HttpStatus.NOT_FOUND, "Evento não encontrado com o id: " + id));
     }
 
-    public EventResponseDTO addAdditionalsToEvent(Long id, List<AdditionalRequestDTO> additionals) {
+    public EventResponseDTO addAdditionalsToEvent(Long id, List<EventAdditionalRequestDTO> additionals) {
         var event = this.findById(id);
+        var user = authenticationService.getAuthenticatedUser();
+
+        if (!event.getUser().equals(user) && user.getRole() != UserRole.ADMIN) {
+            throw new AccessDeniedException("Usuário autenticado não é organizador do Evento (" + event.getUser().getLogin() + ")");
+        }
 
         List<Additional> additionalEntities = new ArrayList<>();
-        for (AdditionalRequestDTO additionalDto : additionals) {
-            Additional additional = additionalRepository.findByNome(additionalDto.getNome());
-            if (additional == null) {
-                throw new AdditionalNotFoundException("Additional não encontrado: " + additionalDto.getNome(), HttpStatus.NOT_FOUND);
-            }
+        for (EventAdditionalRequestDTO additionalDto : additionals) {
+            Additional additional = additionalService.findById(additionalDto.getAdditionalId());
+
             if (event.getAdditionals().contains(additional)) {
                 throw new AdditionalAlreadyAddedException(
-                        "Additional já adicionado ao evento: " + additionalDto.getNome(), HttpStatus.BAD_REQUEST);
+                        "Additional já adicionado ao evento: " + additionalDto.getAdditionalId(), HttpStatus.BAD_REQUEST);
             }
             additionalEntities.add(additional);
         }
@@ -138,17 +156,20 @@ public class EventService {
         return eventMapper.toDTO(event);
     }
 
-    public EventResponseDTO removeAdditionalsFromEvent(Long id, List<AdditionalRequestDTO> additionals) {
+    public EventResponseDTO removeAdditionalsFromEvent(Long id, List<EventAdditionalRequestDTO> additionals) {
         var event = this.findById(id);
+        var user = authenticationService.getAuthenticatedUser();
 
-        for (AdditionalRequestDTO additionalDto : additionals) {
-            Additional additional = additionalRepository.findByNome(additionalDto.getNome());
-            if (additional == null) {
-                throw new AdditionalNotFoundException("Additional não encontrado: " + additionalDto.getNome(), HttpStatus.NOT_FOUND);
-            }
+        if (!event.getUser().equals(user) && user.getRole() != UserRole.ADMIN) {
+            throw new AccessDeniedException("Usuário autenticado não é organizador do Evento (" + event.getUser().getLogin() + ")");
+        }
+
+        for (EventAdditionalRequestDTO additionalDto : additionals) {
+            Additional additional = additionalService.findById(additionalDto.getAdditionalId());
+
             if (!event.getAdditionals().contains(additional)) {
                 throw new AdditionalNotFoundException(
-                        "Additional não está associado ao evento: " + additionalDto.getNome(), HttpStatus.BAD_REQUEST);
+                        "Additional não está associado ao evento: " + additionalDto.getAdditionalId(), HttpStatus.BAD_REQUEST);
             }
             event.getAdditionals().remove(additional);
         }

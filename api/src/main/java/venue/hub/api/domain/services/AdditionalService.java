@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import venue.hub.api.domain.dtos.additional.AdditionalRequestDTO;
 import venue.hub.api.domain.dtos.additional.AdditionalResponseDTO;
+import venue.hub.api.domain.dtos.additional.AdditionalUpdateDTO;
 import venue.hub.api.domain.dtos.mapper.AdditionalMapper;
 import venue.hub.api.domain.entities.Additional;
 import venue.hub.api.domain.repositories.AdditionalRepository;
@@ -26,6 +27,7 @@ public class AdditionalService {
     @Transactional
     public AdditionalResponseDTO createAdditional(AdditionalRequestDTO dto) {
         Additional additional = additionalMapper.toEntity(dto);
+
         additionalRepository.save(additional);
 
         return additionalMapper.toDTO(additional);
@@ -46,10 +48,13 @@ public class AdditionalService {
                 .orElseThrow(() -> new AdditionalNotFoundException("Adicional não encontrado com o id: " + id, HttpStatus.NOT_FOUND));
     }
 
-    public AdditionalResponseDTO updateAdditional(Long id, @Valid AdditionalRequestDTO dto) {
+    public AdditionalResponseDTO updateAdditional(Long id, @Valid AdditionalUpdateDTO dto) {
         var additional = this.findById(id);
+
         additional.update(dto);
+
         additionalRepository.save(additional);
+
         return additionalMapper.toDTO(additional);
     }
 }

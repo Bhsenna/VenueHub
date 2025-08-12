@@ -1,8 +1,6 @@
 package venue.hub.api.domain.controllers;
 
-
 import jakarta.validation.Valid;
-import org.hibernate.query.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -18,7 +16,6 @@ import venue.hub.api.domain.dtos.proposal.ProposalResponseDTO;
 import venue.hub.api.domain.dtos.proposal.ProposalUpdateDTO;
 import venue.hub.api.domain.entities.Proposal;
 import venue.hub.api.domain.enums.Status;
-import venue.hub.api.domain.enums.Status;
 import venue.hub.api.domain.services.ProposalService;
 import venue.hub.api.domain.specification.ProposalSpecification;
 
@@ -30,13 +27,13 @@ import java.util.List;
 public class ProposalController {
 
     @Autowired
-    private ProposalService proposalService;
+    ProposalService proposalService;
 
     @PostMapping("/create")
     public ResponseEntity<ProposalResponseDTO> createProposal(
             @RequestBody @Valid ProposalRequestDTO requestDTO,
-            UriComponentsBuilder uriBuilder) {
-
+            UriComponentsBuilder uriBuilder
+    ) {
         var response = proposalService.createProposal(requestDTO);
         var uri = uriBuilder.path("/api/v1/users/{id}").buildAndExpand(response.getId()).toUri();
 
@@ -53,7 +50,7 @@ public class ProposalController {
                 ProposalSpecification.comStatus(status)
         );
 
-        var proposalPage = proposalService.getAllProposalsByUser(spec, paginacao);
+        var proposalPage = proposalService.getAllProposals(spec, paginacao);
         List<ProposalResponseDTO> proposals = proposalPage.getContent();
 
         return ResponseEntity.ok(
@@ -95,8 +92,8 @@ public class ProposalController {
     public ResponseEntity<PageResponse<ProposalResponseDTO>> getProposalByVenueAndStatus(
             @PathVariable Long id,
             @RequestParam Status status,
-            @PageableDefault(size = 10, sort = {"id"}) Pageable paginacao) {
-
+            @PageableDefault(size = 10, sort = {"id"}) Pageable paginacao
+    ) {
         var proposalPage = proposalService.getProposalsByVenueIdAndStatus(id, status, paginacao);
         List<ProposalResponseDTO> proposals = proposalPage.getContent();
 
@@ -113,8 +110,8 @@ public class ProposalController {
     @GetMapping("/venues/{id}")
     public ResponseEntity<PageResponse<ProposalResponseDTO>> getProposalByVenue(
             @PathVariable Long id,
-            @PageableDefault(size = 10, sort = {"id"}) Pageable paginacao) {
-
+            @PageableDefault(size = 10, sort = {"id"}) Pageable paginacao
+    ) {
         var proposalPage = proposalService.getProposalsByVenueId(id, paginacao);
         List<ProposalResponseDTO> proposals = proposalPage.getContent();
 
@@ -127,12 +124,12 @@ public class ProposalController {
         );
     }
 
-
     @PreAuthorize("hasRole('CLIENT')")
     @PutMapping("/{id}")
     public ResponseEntity<ProposalResponseDTO> updateProposal(
             @PathVariable Long id,
-            @RequestBody @Valid ProposalUpdateDTO updateDTO) {
+            @RequestBody @Valid ProposalUpdateDTO updateDTO
+    ) {
         ProposalResponseDTO response = proposalService.updateProposal(id, updateDTO);
 
         return ResponseEntity.ok(response);

@@ -18,4 +18,5 @@ public class VenueUpdateDTO {
     private Double valor;
     private AddressUpdateDTO address;
     private Long userId;
+
 }

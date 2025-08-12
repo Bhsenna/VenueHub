@@ -62,11 +62,6 @@ public class ProposalService {
     }
 
     public Page<ProposalResponseDTO> getAllProposals(Specification<Proposal> spec, Pageable paginacao) {
-        return proposalRepository.findAll(spec, paginacao)
-                .map(proposalMapper::toDTO);
-    }
-
-    public Page<ProposalResponseDTO> getAllProposalsByUser(Specification<Proposal> spec, Pageable paginacao) {
         User user = authenticationService.getAuthenticatedUser();
 
         switch (user.getRole()) {
@@ -76,14 +71,20 @@ public class ProposalService {
             case CLIENT -> {
                 spec = spec.and(ProposalSpecification.comClient(user));
             }
+            case ADMIN -> {
+            }
+            default -> {
+                return null;
+            }
         }
 
-        return getAllProposals(spec, paginacao);
+        return proposalRepository.findAll(spec, paginacao)
+                .map(proposalMapper::toDTO);
     }
 
-
     public ProposalResponseDTO getProposalById(Long id) {
-        return proposalMapper.toDTO(findById(id));
+        var proposal = this.findById(id);
+        return proposalMapper.toDTO(proposal);
     }
 
     public Page<ProposalResponseDTO> getProposalsByVenueId(Long id, Pageable paginacao) {
@@ -98,17 +99,18 @@ public class ProposalService {
 
     @Transactional
     public ProposalResponseDTO updateProposal(Long id, ProposalUpdateDTO updateDTO) {
-        Proposal proposal = findById(id);
-        if (updateDTO.getValor() != null) {
-            proposal.setValor(updateDTO.getValor());
-        }
+        var proposal = this.findById(id);
+
+        proposal.update(updateDTO);
+
+        proposalRepository.save(proposal);
 
         return proposalMapper.toDTO(proposal);
     }
 
     @Transactional
     public ProposalResponseDTO deleteProposal(Long id) {
-        Proposal proposal = findById(id);
+        Proposal proposal = this.findById(id);
         proposal.setStatus(Status.CANCELADO);
 
         return proposalMapper.toDTO(proposal);
@@ -121,7 +123,7 @@ public class ProposalService {
 
     @Transactional
     public ProposalResponseDTO aceitaProposal(Long id) {
-        Proposal proposal = findById(id);
+        Proposal proposal = this.findById(id);
         User dono = proposal.getVenue().getUser();
         User user = authenticationService.getAuthenticatedUser();
 
@@ -139,7 +141,7 @@ public class ProposalService {
 
     @Transactional
     public ProposalResponseDTO recusaProposal(Long id) {
-        Proposal proposal = findById(id);
+        Proposal proposal = this.findById(id);
         User dono = proposal.getVenue().getUser();
         User user = authenticationService.getAuthenticatedUser();
 
@@ -157,7 +159,7 @@ public class ProposalService {
 
     @Transactional
     public ProposalResponseDTO confirmaProposal(Long id) {
-        Proposal proposal = findById(id);
+        Proposal proposal = this.findById(id);
         User client = proposal.getEvent().getUser();
         User user = authenticationService.getAuthenticatedUser();
 

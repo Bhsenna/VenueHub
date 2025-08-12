@@ -6,8 +6,6 @@ import lombok.NoArgsConstructor;
 import venue.hub.api.domain.dtos.address.AddressResponseDTO;
 import venue.hub.api.domain.dtos.user.UserResponseDTO;
 import venue.hub.api.domain.dtos.venueadditional.VenueAdditionalResponseDTO;
-import venue.hub.api.domain.entities.Address;
-import venue.hub.api.domain.entities.User;
 
 import java.util.List;
 

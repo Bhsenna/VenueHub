@@ -11,6 +11,9 @@ import venue.hub.api.domain.entities.Venue;
 public class CalendarRequestDTO {
 
     private Venue venue;
+
     private int month;
+
     private int year;
+
 }

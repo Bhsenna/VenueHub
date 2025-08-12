@@ -25,7 +25,8 @@ public class VenueRequestDTO {
     private String descricao;
 
     @NotNull
-    @Pattern(regexp = "^\\(?[1-9]{2}\\)? ?(?:[2-8]|9[1-9])[0-9]{3}-?[0-9]{4}$")
+    @Pattern(regexp = "^\\(?[1-9]{2}\\)? ?(?:[2-8]|9[1-9])[0-9]{3}-?[0-9]{4}$",
+            message = "deve estar no formato 'XX XXXXX-XXXX'")
     private String telefone;
 
     @Positive
@@ -33,9 +34,6 @@ public class VenueRequestDTO {
 
     @NotNull
     private AddressRequestDTO address;
-
-    @NotNull
-    private Long userId;
 
     private List<VenueAdditionalRequestDTO> additionals;
 }

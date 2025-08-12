@@ -9,7 +9,9 @@ import venue.hub.api.domain.entities.VenueAdditionalId;
 @AllArgsConstructor
 @NoArgsConstructor
 public class VenueAdditionalResponseDTO {
+
     private VenueAdditionalId id;
     private String nome;
     private Long valor;
+
 }

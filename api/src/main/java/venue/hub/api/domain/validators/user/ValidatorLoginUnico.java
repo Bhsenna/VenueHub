@@ -8,7 +8,6 @@ import venue.hub.api.domain.repositories.UserRepository;
 
 @Component
 public class ValidatorLoginUnico implements UserValidator {
-
     @Autowired
     UserRepository userRepository;
 

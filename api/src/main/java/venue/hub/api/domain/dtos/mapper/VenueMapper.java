@@ -13,7 +13,7 @@ public interface VenueMapper {
     @Mapping(source = "additionals", target = "additionals")
     VenueResponseDTO toDTO(Venue venue);
 
-    @Mapping(source = "userId", target = "user")
     @Mapping(target = "additionals", ignore = true)
     Venue toEntity(VenueRequestDTO venueRequestDTO);
+
 }

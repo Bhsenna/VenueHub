@@ -9,6 +9,7 @@ import venue.hub.api.domain.entities.Address;
 public interface AddressMapper {
 
     AddressResponseDTO toDTO(Address address);
+
     Address toEntity(AddressRequestDTO addressRequestDTO);
 
 }

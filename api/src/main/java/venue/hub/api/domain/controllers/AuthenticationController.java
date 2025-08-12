@@ -19,14 +19,14 @@ import venue.hub.api.domain.services.LoginService;
 public class AuthenticationController {
 
     @Autowired
-    private LoginService loginService;
+    LoginService loginService;
 
     @PostMapping("/register")
-    public ResponseEntity<UserResponseDTO> createUser(
+    public ResponseEntity<UserResponseDTO> register(
             @RequestBody @Valid UserRequestDTO requestDTO,
             UriComponentsBuilder uriBuilder
     ) {
-        var user = loginService.createUser(requestDTO);
+        var user = loginService.register(requestDTO);
         var uri = uriBuilder.path("/api/v1/users/{id}").buildAndExpand(user.getId()).toUri();
 
         return ResponseEntity.created(uri).body(user);

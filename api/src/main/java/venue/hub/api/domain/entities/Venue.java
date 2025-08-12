@@ -38,6 +38,10 @@ public class Venue {
 
     private boolean ativo = true;
 
+    public void delete() {
+        this.ativo = false;
+    }
+
     public void update(VenueUpdateDTO updateDTO) {
 
         if (updateDTO.getNome() != null && !updateDTO.getNome().isBlank()) {

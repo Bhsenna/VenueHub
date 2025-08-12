@@ -3,17 +3,19 @@ package venue.hub.api.domain.controllers;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
-import venue.hub.api.domain.dtos.additional.AdditionalRequestDTO;
 import venue.hub.api.domain.dtos.event.EventRequestDTO;
 import venue.hub.api.domain.dtos.event.EventResponseDTO;
 import venue.hub.api.domain.dtos.event.EventUpdateDTO;
+import venue.hub.api.domain.dtos.eventadditional.EventAdditionalRequestDTO;
 import venue.hub.api.domain.dtos.page.PageResponse;
+import venue.hub.api.domain.entities.Event;
 import venue.hub.api.domain.services.EventService;
 
 import java.util.List;
@@ -26,7 +28,7 @@ public class EventController {
     @Autowired
     EventService eventService;
 
-    @PreAuthorize("hasRole('CLIENT')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'CLIENT')")
     @PostMapping("/create")
     public ResponseEntity<EventResponseDTO> createEvent(
             @RequestBody @Valid EventRequestDTO requestDTO,
@@ -38,13 +40,15 @@ public class EventController {
         return ResponseEntity.created(uri).body(event);
     }
 
-
     @PreAuthorize("hasAnyRole('ADMIN', 'CLIENT')")
     @GetMapping("/all")
     public ResponseEntity<PageResponse<EventResponseDTO>> getAllEvents(
             @PageableDefault(size = 10, sort = {"id"}) Pageable paginacao
     ) {
-        var eventPage = eventService.getAllEvents(paginacao);
+        Specification<Event> spec = Specification.allOf(
+        );
+
+        var eventPage = eventService.getAllEvents(spec, paginacao);
         List<EventResponseDTO> events = eventPage.getContent();
 
         return ResponseEntity.ok(
@@ -56,15 +60,14 @@ public class EventController {
         );
     }
 
-
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'CLIENT')")
     @GetMapping("/{id}")
     public ResponseEntity<EventResponseDTO> getEventById(@PathVariable Long id) {
         EventResponseDTO event = eventService.getEventById(id);
         return ResponseEntity.ok(event);
     }
 
-    @PreAuthorize("hasRole('CLIENT')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'CLIENT')")
     @PutMapping("/update/{id}")
     public ResponseEntity<EventResponseDTO> updateEvent(
             @PathVariable Long id,
@@ -74,28 +77,29 @@ public class EventController {
         return ResponseEntity.ok(updatedEvent);
     }
 
-    @PreAuthorize("hasRole('CLIENT')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'CLIENT')")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteEvent(@PathVariable Long id) {
         eventService.deleteEvent(id);
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/additionals/{id}")
+    @PatchMapping("/additionals/{eventId}")
     public ResponseEntity<EventResponseDTO> addAdditionalsToEvent(
-            @PathVariable Long id,
-            @RequestBody List<AdditionalRequestDTO> additionals
+            @PathVariable Long eventId,
+            @RequestBody List<EventAdditionalRequestDTO> additionals
     ) {
-        EventResponseDTO updatedEvent = eventService.addAdditionalsToEvent(id, additionals);
-        return ResponseEntity.ok(updatedEvent);
+        EventResponseDTO response = eventService.addAdditionalsToEvent(eventId, additionals);
+        return ResponseEntity.ok(response);
     }
 
-    @PatchMapping("/additionals/{id}/remove")
+    @PatchMapping("/additionals/{eventId}/remove")
     public ResponseEntity<EventResponseDTO> removeAdditionalsFromEvent(
-            @PathVariable Long id,
-            @RequestBody List<AdditionalRequestDTO> additionals
+            @PathVariable Long eventId,
+            @RequestBody List<EventAdditionalRequestDTO> additionals
     ) {
-        EventResponseDTO updatedEvent = eventService.removeAdditionalsFromEvent(id, additionals);
-        return ResponseEntity.ok(updatedEvent);
+        EventResponseDTO response = eventService.removeAdditionalsFromEvent(eventId, additionals);
+        return ResponseEntity.ok(response);
     }
+
 }

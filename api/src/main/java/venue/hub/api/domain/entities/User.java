@@ -31,21 +31,13 @@ public class User implements UserDetails {
     private String senha;
 
     @Enumerated(EnumType.STRING)
-    private UserRole role = UserRole.CLIENT;
+    private UserRole role;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "address_id", nullable = false)
     private Address address;
 
     private boolean ativo = true;
-
-    public User(String nome, String sobrenome, String login, String senha, UserRole role, Address address) {
-        this.nome = nome;
-        this.sobrenome = sobrenome;
-        this.login = login;
-        this.senha = senha;
-        this.address = address;
-    }
 
     public void delete() {
         this.ativo = false;

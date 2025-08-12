@@ -2,7 +2,7 @@ package venue.hub.api.domain.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
-import venue.hub.api.domain.dtos.additional.AdditionalRequestDTO;
+import venue.hub.api.domain.dtos.additional.AdditionalUpdateDTO;
 
 @Table(name = "additionals")
 @Entity(name = "Additional")
@@ -19,7 +19,7 @@ public class Additional {
 
     private String nome;
 
-    public void update(AdditionalRequestDTO dto) {
+    public void update(AdditionalUpdateDTO dto) {
         if (dto.getNome() != null && !dto.getNome().isEmpty()) {
             this.nome = dto.getNome();
         }

@@ -2,6 +2,7 @@ package venue.hub.api.domain.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import venue.hub.api.domain.dtos.proposal.ProposalUpdateDTO;
 import venue.hub.api.domain.enums.Status;
 
 import java.time.LocalDateTime;
@@ -33,4 +34,10 @@ public class Proposal {
     private Status status = Status.PENDENTE;
 
     private LocalDateTime dataCriacao = LocalDateTime.now();
+
+    public void update(ProposalUpdateDTO updateDTO) {
+        if (updateDTO.getValor() != null && updateDTO.getValor() > 0) {
+            this.valor = updateDTO.getValor();
+        }
+    }
 }
