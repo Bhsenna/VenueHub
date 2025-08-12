@@ -76,6 +76,14 @@ public class EventController {
 
 
     @PreAuthorize("hasAnyRole('ADMIN', 'CLIENT')")
+    @GetMapping("/{id}/details")
+    public ResponseEntity<EventDetailsDTO> getEventByIdDetails(@PathVariable Long id) {
+        EventDetailsDTO event = eventService.getEventsDetails(id);
+        return ResponseEntity.ok(event);
+    }
+
+
+    @PreAuthorize("hasRole('CLIENT')")
     @PutMapping("/update/{id}")
     public ResponseEntity<EventResponseDTO> updateEvent(
             @PathVariable Long id,

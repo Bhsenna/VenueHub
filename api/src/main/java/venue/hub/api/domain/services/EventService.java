@@ -28,6 +28,7 @@ import venue.hub.api.infra.exceptions.AdditionalAlreadyAddedException;
 import venue.hub.api.infra.exceptions.AdditionalNotFoundException;
 import venue.hub.api.infra.exceptions.EventNotFoundException;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -89,7 +90,13 @@ public class EventService {
             }
         }
 
+
         return eventRepository.findAll(spec, paginacao)
+                .map(eventMapper::toDTO);
+    }
+
+    private Page<EventResponseDTO> findAll(Pageable paginacao) {
+        return eventRepository.findAllByDataFimAfter(LocalDate.now(), paginacao)
                 .map(eventMapper::toDTO);
     }
 
