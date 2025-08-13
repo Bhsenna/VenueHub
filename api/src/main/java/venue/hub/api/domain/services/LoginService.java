@@ -66,7 +66,7 @@ public class LoginService {
         User user = userRepository.findUserByLogin(dto.login())
                 .orElseThrow(() -> new UserNotFoundException(HttpStatus.NOT_FOUND, "Usuário não encontrado com o login: " + dto.login()));
 
-        if (user == null || !passwordEncoder.matches(dto.senha(), user.getPassword())) {
+        if (!passwordEncoder.matches(dto.senha(), user.getPassword())) {
             throw new UserNotFoundException(HttpStatus.FORBIDDEN, "Credenciais inválidas");
         }
 

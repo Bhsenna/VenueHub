@@ -58,7 +58,7 @@ public class UserServiceTest {
         address = new Address(1L, "88760430", "Rua de Cima", 123, null, "Centro", "Florianópolis", Estado.SC, -1.0, -1.0);
         user = new User(1L, "John", "Doe", "johndoe@email.com", "12345", UserRole.ADMIN, address, true);
         addressResponseDTO = new AddressResponseDTO(address.getId(), address.getCep(), address.getLogradouro(), address.getNumero(), address.getComplemento(), address.getBairro(), address.getCidade(), address.getEstado(), address.getLatitude(), address.getLongitude());
-        userResponseDTO = new UserResponseDTO(user.getId(), user.getNome(), user.getSobrenome(), user.getLogin(), user.getSenha(), user.getRole(), addressResponseDTO, user.isAtivo());
+        userResponseDTO = new UserResponseDTO(user.getId(), user.getNome(), user.getSobrenome(), user.getLogin(),addressResponseDTO);
     }
 
     @Test

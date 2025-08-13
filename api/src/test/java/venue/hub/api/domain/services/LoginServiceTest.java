@@ -80,35 +80,26 @@ public class LoginServiceTest {
         address = new Address(1L, "88760430", "Rua de Cima", 123, null, "Centro", "Florianópolis", Estado.SC, -1.0, -1.0);
         user = new User(1L, "John", "Doe", "johndoe@email.com", "12345", UserRole.ADMIN, address, true);
         addressResponseDTO = new AddressResponseDTO(address.getId(), address.getCep(), address.getLogradouro(), address.getNumero(), address.getComplemento(), address.getBairro(), address.getCidade(), address.getEstado(), address.getLatitude(), address.getLongitude());
-        userResponseDTO = new UserResponseDTO(user.getId(), user.getNome(), user.getSobrenome(), user.getLogin(), user.getSenha(), user.getRole(), addressResponseDTO, user.isAtivo());
+        userResponseDTO = new UserResponseDTO(user.getId(), user.getNome(), user.getSobrenome(), user.getLogin(), addressResponseDTO);
     }
 
     @Test
     public void createUser_shouldCreateUserSuccessfully() {
         // Arrange
         AddressRequestDTO addressRequestDTO = new AddressRequestDTO("88760430", "Rua de Cima", 123, null, "Centro", "Florianópolis", Estado.SC, -1.0, -1.0);
-        UserRequestDTO requestDTO = new UserRequestDTO("John", "Doe", "johndoe@email.com", "12345", addressRequestDTO);
-
-        AddressValidator mockAddressValidator1 = mock(AddressValidator.class);
-        AddressValidator mockAddressValidator2 = mock(AddressValidator.class);
-        when(addressValidators.iterator()).thenReturn(Arrays.asList(mockAddressValidator1, mockAddressValidator2).iterator());
+        UserRequestDTO requestDTO = new UserRequestDTO("John", "Doe", "johndoe@email.com", "12345", UserRole.ADMIN, addressRequestDTO);
 
         UserValidator mockUserValidator1 = mock(UserValidator.class);
 
-        when(userRepository.findByLogin(requestDTO.getLogin())).thenReturn(null);
-
         AddressValidator mockAddressValidator = mock(AddressValidator.class);
         UserValidator mockUserValidator = mock(UserValidator.class);
-        when(addressValidators.get(0)).thenReturn(mockAddressValidator);
-        when(userValidators.get(0)).thenReturn(mockUserValidator);
 
         when(userMapper.toEntity(requestDTO)).thenReturn(user);
         when(userMapper.toDTO(user)).thenReturn(userResponseDTO);
-
         when(passwordEncoder.encode(requestDTO.getSenha())).thenReturn("hashed_password");
 
         // Act
-        UserResponseDTO result = loginService.createUser(requestDTO);
+        UserResponseDTO result = loginService.register(requestDTO);
 
         // Assert
         assertNotNull(result);
