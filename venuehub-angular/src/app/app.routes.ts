@@ -10,6 +10,8 @@ import { EventList } from './components/list/event-list/event-list';
 import { VenueDetails } from './components/pages/venue-details/venue-details';
 import { EventDetails } from './components/pages/event-details/event-details';
 import { ChatbotComponent } from './components/chatbot-component/chatbot-component';
+import { VenueCalendarComponent } from './components/pages/venue-calendar/venue-calendar';
+import { ProposalList } from './components/list/proposal-list/proposal-list';
 
 export const routes: Routes = [
     { path: '', component: Login },
@@ -20,8 +22,9 @@ export const routes: Routes = [
     { path: 'register', component: Register },
     { path: 'home', component: Home },
     { path: 'venues/:id', component: VenueDetails },
-    { path: 'events', component: EventList},
+    { path: 'events', component: EventList },
     { path: 'events/:id', component: EventDetails },
-    { path: 'chatbot', component: ChatbotComponent}
-
+    { path: 'chatbot', component: ChatbotComponent },
+    { path: 'venues/:id/calendar', component: VenueCalendarComponent },
+    { path: 'proposals', component: ProposalList}
 ];

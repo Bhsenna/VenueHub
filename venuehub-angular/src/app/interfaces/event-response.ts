@@ -1,5 +1,6 @@
 export interface EventResponse {
   id: number;
+  nome: string,
   tipoEvento: string;
   qtPessoas: number;
   dataInicio: string;

@@ -80,7 +80,7 @@ public class ProposalController {
         return ResponseEntity.ok(response);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+
     @GetMapping("/{id}")
     public ResponseEntity<ProposalResponseDTO> getProposalById(@PathVariable Long id) {
         ProposalResponseDTO response = proposalService.getProposalById(id);

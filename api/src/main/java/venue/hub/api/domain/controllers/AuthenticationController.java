@@ -3,15 +3,14 @@ package venue.hub.api.domain.controllers;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import venue.hub.api.domain.dtos.user.TokenDTO;
 import venue.hub.api.domain.dtos.user.UserLoginDTO;
 import venue.hub.api.domain.dtos.user.UserRequestDTO;
 import venue.hub.api.domain.dtos.user.UserResponseDTO;
+import venue.hub.api.domain.entities.User;
+import venue.hub.api.domain.services.AuthenticationService;
 import venue.hub.api.domain.services.LoginService;
 
 @RestController
@@ -20,6 +19,10 @@ public class AuthenticationController {
 
     @Autowired
     LoginService loginService;
+
+    @Autowired
+    AuthenticationService authenticationService;
+
 
     @PostMapping("/register")
     public ResponseEntity<UserResponseDTO> register(
@@ -38,4 +41,8 @@ public class AuthenticationController {
         return ResponseEntity.ok(token);
     }
 
+    @GetMapping
+    public ResponseEntity<User> getAuthenticatedUser() {
+        return ResponseEntity.ok(authenticationService.getAuthenticatedUser());
+    }
 }

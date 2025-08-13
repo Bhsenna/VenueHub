@@ -1,0 +1,134 @@
+:host {
+  display: block;
+  padding: 24px;
+  background: #f7f8fa;
+  min-height: 100vh;
+}
+
+.state-msg {
+  max-width: 1200px;
+  margin: 32px auto;
+  text-align: center;
+  color: #555;
+  font-size: 1.05rem;
+}
+
+.proposals-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+  gap: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.proposal-card {
+  border-radius: 12px;
+  overflow: hidden;
+  transition: box-shadow 0.2s ease, transform 0.12s ease;
+}
+
+.proposal-card:hover {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding-right: 16px;
+}
+
+.title-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 2px; /* menos espaçamento entre título e subtítulo */
+}
+
+.card-title {
+  margin: 0;
+  color: #1976d2;
+  font-weight: 700;
+  line-height: 1.2;
+  font-size: 1.2rem;
+}
+
+.card-title .type {
+  color: #6b7a90;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.subtitle {
+  color: #607d8b;
+  font-size: 0.95rem;
+  margin-top: 0; /* remove espaço extra */
+}
+
+.status-chip {
+  display: inline-block;
+  padding: 6px 14px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.status-accepted {
+  background: #e6f4ea;
+  color: #1e7e34;
+  border: 1px solid #b7e0c2;
+}
+
+.status-pending {
+  background: #fff7e6;
+  color: #a96f00;
+  border: 1px solid #ffe1a6;
+}
+
+.status-rejected {
+  background: #fde8e8;
+  color: #b72136;
+  border: 1px solid #f5b1b7;
+}
+
+.meta {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* duas colunas internas */
+  gap: 8px;
+  margin-top: 4px; /* menos espaço do header */
+}
+
+.meta-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+  border-bottom: 1px dashed #e6e9ef;
+}
+
+.meta-row:last-child {
+  border-bottom: none;
+}
+
+.meta-row mat-icon {
+  font-size: 20px;
+  color: #1976d2;
+  opacity: 0.9;
+}
+
+.meta-row span {
+  min-width: 120px; /* largura mínima para o rótulo, ajusta conforme precisar */
+  font-weight: 500;
+}
+
+.meta-row strong {
+  flex-shrink: 0;
+}
+
+mat-card-actions {
+  padding: 8px 16px 16px 16px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}

@@ -4,6 +4,7 @@ import { VenueService } from '../../../services/venue-service';
 import { VenueResponse } from '../../../interfaces/venue-response';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { UserService } from '../../../services/user-service'; // supondo que exista
 
 @Component({
   selector: 'app-venue-list',
@@ -18,16 +19,35 @@ export class VenueList {
 
   venues: VenueResponse[] = [];
   isLoading = false;
+  isOwner = false;
 
-  constructor(private venueService: VenueService, private router: Router) { }
+  constructor(
+    private venueService: VenueService,
+    private userService: UserService,
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
-    this.loadVenues();
+    this.userService.getCurrentUser().subscribe({
+      next: (user) => {
+        this.isOwner = user.role === 'OWNER';
+        this.loadVenues();
+      },
+      error: (err) => {
+        console.error('Erro ao buscar usuário atual:', err);
+        this.loadVenues(); 
+      }
+    });
   }
 
   loadVenues(): void {
     this.isLoading = true;
-    this.venueService.getVenues().subscribe({
+
+    const venueObservable = this.isOwner
+      ? this.venueService.getVenuesByOwner() 
+      : this.venueService.getVenues();       
+
+    venueObservable.subscribe({
       next: (data) => {
         this.venues = data.currentPageData;
         this.isLoading = false;

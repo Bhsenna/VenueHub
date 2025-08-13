@@ -14,7 +14,19 @@ export class ProposalService {
     return this.http.post<any>(`${this.apiUrl}/create`, request);
   }
 
+  getAllProposals() {
+    return this.http.get<any[]>(`${this.apiUrl}/all`);
+  }
+
   getProposalsByEvent(eventId: number): Observable<any> {
     return this.http.get<any[]>(`${this.apiUrl}/event/${eventId}`);
+  }
+
+  acceptProposal(id: number): Observable<any> {
+    return this.http.patch<any>(`${this.apiUrl}/aceita/${id}`, {});
+  }
+
+  rejectProposal(id: number): Observable<any> {
+    return this.http.patch<any>(`${this.apiUrl}/rejeita/${id}`, {});
   }
 }

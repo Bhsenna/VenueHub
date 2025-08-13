@@ -117,7 +117,7 @@ public class EventService {
 
     public EventDetailsDTO getEventsDetails(Long eventId) {
 
-        EventResponseDTO event = getEventById(eventId);
+        EventResponseDTO event = eventMapper.toDTO(findById(eventId));
         List<Proposal> proposals = proposalRepository.findByEventIdAndStatus(eventId, Status.CONFIRMADO);
 
         if (proposals.isEmpty()) {

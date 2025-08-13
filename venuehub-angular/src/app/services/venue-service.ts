@@ -3,8 +3,9 @@ import { Injectable } from '@angular/core';
 import { VenueResponse } from '../interfaces/venue-response';
 import { Observable } from 'rxjs';
 
+
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class VenueService {
 
@@ -15,6 +16,22 @@ export class VenueService {
     getVenues(): Observable<any> {
         return this.httpClient.get<any>(this.apiUrl);
     }
+
+    getVenuesByOwner(): Observable<any> {
+        return this.httpClient.get<any>(`${this.apiUrl}/all`);
+    }
+
+    getEvents(venueId: number, month: number, year: number) {
+        return this.httpClient.get<any>(
+            `${this.apiUrl}/events?venueId=${venueId}&month=${month}&year=${year}`
+        );
+    }
+
+    getAllEvents(venueId: number) {
+        return this.httpClient.get<any>(`${this.apiUrl}/all-events?venueId=${venueId}`);
+    }
+
+
 
     getVenueById(id: string) {
         return this.httpClient.get<VenueResponse>(`${this.apiUrl}/${id}`);

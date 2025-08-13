@@ -1,12 +1,17 @@
 <nav class="navbar">
   <div class="navbar-title">VenueHub</div>
   <ul class="navbar-links">
-    <li><a routerLink="/home" routerLinkActive="active">Home</a></li>
-    <li><a routerLink="/events" routerLinkActive="active">Meus Eventos</a></li>
-    <li><a routerLink="/chatbot" routerLinkActive="active">Criar Evento</a></li>
-    <li><a routerLink="/proposals" routerLinkActive="active">Minhas propostas</a></li>
-    <li><a routerLink="/profile" routerLinkActive="active">Perfil</a></li>
-    <li *ngIf="loggedIn"><a (click)="logout()">Sair</a></li>
 
+    <li><a routerLink="/home" routerLinkActive="active">Home</a></li>
+
+    <li *ngIf="!isOwner"><a routerLink="/home" routerLinkActive="active">Home</a></li>
+    <li *ngIf="!isOwner"><a routerLink="/events" routerLinkActive="active">Meus Eventos</a></li>
+    <li *ngIf="!isOwner"><a routerLink="/chatbot" routerLinkActive="active">Criar Evento</a></li>
+    <li *ngIf="!isOwner"><a routerLink="/proposals" routerLinkActive="active">Minhas propostas</a></li>
+
+    <li *ngIf="isOwner"><a routerLink="/venue/create" routerLinkActive="active">Cadastrar Local</a></li>
+    <li *ngIf="isOwner"><a routerLink="proposals" routerLinkActive="active">Ver propostas</a></li>
+
+    <li *ngIf="loggedIn"><a (click)="logout()">Sair</a></li>
   </ul>
 </nav>
