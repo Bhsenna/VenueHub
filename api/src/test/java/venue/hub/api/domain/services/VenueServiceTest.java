@@ -323,7 +323,7 @@ public class VenueServiceTest {
     public void getAllVenues_shouldReturnVenuesForAuthenticatedOwner() {
         // Arrange
         Pageable paginacao = PageRequest.of(0, 10);
-        Specification<Venue> spec = Specification.where(null);
+        Specification<Venue> spec = Specification.allOf();
 
         User testOwnerUser = new User();
         testOwnerUser.setRole(UserRole.OWNER);
@@ -358,7 +358,7 @@ public class VenueServiceTest {
     public void getAllVenues_shouldReturnAllVenuesForAdmin() {
         // Arrange
         Pageable paginacao = PageRequest.of(0, 10);
-        Specification<Venue> spec = Specification.where(null);
+        Specification<Venue> spec = Specification.allOf();
 
         Venue venue1 = new Venue(2L, "Venue do Owner", 150, "Descrição", "99999-999", 1000, address, ownerUser, new ArrayList<>(), true);
         Venue venue2 = new Venue(3L, "Outra Venue", 200, "Descrição", "99999-999", 1200, address, adminUser, new ArrayList<>(), true);
@@ -389,7 +389,7 @@ public class VenueServiceTest {
     public void getAllVenues_shouldReturnNullForAuthenticatedUser() {
         // Arrange
         Pageable paginacao = PageRequest.of(0, 10);
-        Specification<Venue> spec = Specification.where(null);
+        Specification<Venue> spec = Specification.allOf();
 
         User regularUser = new User();
         regularUser.setRole(UserRole.CLIENT);
