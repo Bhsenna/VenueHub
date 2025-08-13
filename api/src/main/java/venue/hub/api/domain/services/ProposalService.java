@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import venue.hub.api.domain.dtos.mapper.ProposalMapper;
 import venue.hub.api.domain.dtos.proposal.ProposalRequestDTO;
@@ -16,6 +17,7 @@ import venue.hub.api.domain.dtos.proposal.ProposalUpdateDTO;
 import venue.hub.api.domain.entities.Proposal;
 import venue.hub.api.domain.entities.User;
 import venue.hub.api.domain.enums.Status;
+import venue.hub.api.domain.enums.UserRole;
 import venue.hub.api.domain.repositories.ProposalRepository;
 import venue.hub.api.domain.specification.ProposalSpecification;
 import venue.hub.api.domain.validators.proposal.ProposalValidator;
@@ -127,8 +129,8 @@ public class ProposalService {
         User dono = proposal.getVenue().getUser();
         User user = authenticationService.getAuthenticatedUser();
 
-        if (dono != user) {
-            throw new UserNotFoundException(HttpStatus.FORBIDDEN, "Credenciais inválidas");
+        if (!dono.equals(user) && user.getRole() != UserRole.ADMIN) {
+            throw new AccessDeniedException("Usuário autenticado não é dono da Venue (" + dono.getLogin() + ")");
         }
         if (proposal.getStatus() != Status.PENDENTE) {
             throw new ValidationException("Tentando aceitar proposta que não está pendente (" + proposal.getStatus() + ")");
@@ -145,8 +147,8 @@ public class ProposalService {
         User dono = proposal.getVenue().getUser();
         User user = authenticationService.getAuthenticatedUser();
 
-        if (dono != user) {
-            throw new UserNotFoundException(HttpStatus.FORBIDDEN, "Credenciais inválidas");
+        if (!dono.equals(user) && user.getRole() != UserRole.ADMIN) {
+            throw new AccessDeniedException("Usuário autenticado não é dono da Venue (" + dono.getLogin() + ")");
         }
         if (proposal.getStatus() != Status.PENDENTE) {
             throw new ValidationException("Tentando recusar proposta que não está pendente (" + proposal.getStatus() + ")");
@@ -163,8 +165,8 @@ public class ProposalService {
         User client = proposal.getEvent().getUser();
         User user = authenticationService.getAuthenticatedUser();
 
-        if (client != user) {
-            throw new UserNotFoundException(HttpStatus.FORBIDDEN, "Credenciais inválidas");
+        if (!client.equals(user) && user.getRole() != UserRole.ADMIN) {
+            throw new AccessDeniedException("Usuário autenticado não é organizador do Evento (" + client.getLogin() + ")");
         }
         if (proposal.getStatus() != Status.ACEITO) {
             throw new ValidationException("Tentando confirmar proposta que não está aceita (" + proposal.getStatus() + ")");
