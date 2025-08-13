@@ -12,6 +12,7 @@ import java.util.List;
 public interface VenueAdditionalMapper {
 
     @Mapping(source = "additional.nome", target = "nome")
+    @Mapping(source = "id.additionalId", target = "additionalId")
     VenueAdditionalResponseDTO toDTO(VenueAdditional venueAdditional);
     List<VenueAdditionalResponseDTO> toDTO(List<VenueAdditional> venueAdditionals);
 
