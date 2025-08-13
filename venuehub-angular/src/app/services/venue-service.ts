@@ -38,7 +38,7 @@ export class VenueService {
     }
 
     createVenue(venue: VenueResponse) {
-        return this.httpClient.post<VenueResponse>(this.apiUrl, venue);
+        return this.httpClient.post<VenueResponse>(`${this.apiUrl}/create`, venue);
     }
 
     updateVenue(id: string, venue: VenueResponse) {

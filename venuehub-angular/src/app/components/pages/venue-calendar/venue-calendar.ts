@@ -15,7 +15,7 @@ import interactionPlugin from '@fullcalendar/interaction';
   templateUrl: './venue-calendar.html',
   styleUrls: ['./venue-calendar.css']
 })
-export class VenueCalendarComponent {
+export class VenueCalendar {
   venueId!: number;
   calendarOptions!: CalendarOptions;
 
