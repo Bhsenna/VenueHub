@@ -52,10 +52,6 @@ public class LoginService {
         addressValidators.forEach(v -> v.validate(requestDTO.getAddress()));
         userValidators.forEach(v -> v.validate(requestDTO));
 
-        addressValidators.forEach(v -> v.validate(requestDTO.getAddress()));
-        userValidators.forEach(v -> v.validate(requestDTO));
-
-
         User user = userMapper.toEntity(requestDTO);
         user.setSenha(passwordEncoder.encode(requestDTO.getSenha()));
 

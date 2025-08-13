@@ -17,8 +17,10 @@ import venue.hub.api.domain.entities.Proposal;
 import venue.hub.api.domain.entities.User;
 import venue.hub.api.domain.enums.Status;
 import venue.hub.api.domain.repositories.ProposalRepository;
+import venue.hub.api.domain.specification.ProposalSpecification;
 import venue.hub.api.domain.validators.proposal.ProposalValidator;
 import venue.hub.api.infra.exceptions.ProposalNotFoundException;
+import venue.hub.api.infra.exceptions.UserNotFoundException;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -60,38 +62,29 @@ public class ProposalService {
     }
 
     public Page<ProposalResponseDTO> getAllProposals(Specification<Proposal> spec, Pageable paginacao) {
-        return proposalRepository.findAll(spec, paginacao)
-                .map(proposalMapper::toDTO);
-    }
-
-    public Page<ProposalResponseDTO> getAllProposalsByUser(Specification<Proposal> spec, Pageable paginacao) {
         User user = authenticationService.getAuthenticatedUser();
 
         switch (user.getRole()) {
             case OWNER -> {
-                return proposalRepository.findAllByOwner(user, spec, paginacao)
-                        .map(proposalMapper::toDTO);
+                spec = spec.and(ProposalSpecification.comOwner(user));
             }
             case CLIENT -> {
-                proposalRepository.findAllByClient(user, spec, paginacao)
-                        .map(proposalMapper::toDTO);
+                spec = spec.and(ProposalSpecification.comClient(user));
             }
             case ADMIN -> {
-                return getAllProposals(spec, paginacao);
             }
             default -> {
                 return null;
             }
         }
 
-        Page<Proposal> proposals = proposalRepository.findAllByClient(user, spec, paginacao);
-
-        return proposals.map(proposalMapper::toDTO);
+        return proposalRepository.findAll(spec, paginacao)
+                .map(proposalMapper::toDTO);
     }
 
-
     public ProposalResponseDTO getProposalById(Long id) {
-        return proposalMapper.toDTO(findById(id));
+        var proposal = this.findById(id);
+        return proposalMapper.toDTO(proposal);
     }
 
     public Page<ProposalResponseDTO> getProposalsByVenueId(Long id, Pageable paginacao) {
@@ -104,20 +97,20 @@ public class ProposalService {
                 .map(proposalMapper::toDTO);
     }
 
-
     @Transactional
     public ProposalResponseDTO updateProposal(Long id, ProposalUpdateDTO updateDTO) {
-        Proposal proposal = findById(id);
-        if (updateDTO.getValor() != null) {
-            proposal.setValor(updateDTO.getValor());
-        }
+        var proposal = this.findById(id);
+
+        proposal.update(updateDTO);
+
+        proposalRepository.save(proposal);
 
         return proposalMapper.toDTO(proposal);
     }
 
     @Transactional
     public ProposalResponseDTO deleteProposal(Long id) {
-        Proposal proposal = findById(id);
+        Proposal proposal = this.findById(id);
         proposal.setStatus(Status.CANCELADO);
 
         return proposalMapper.toDTO(proposal);
@@ -130,8 +123,13 @@ public class ProposalService {
 
     @Transactional
     public ProposalResponseDTO aceitaProposal(Long id) {
-        Proposal proposal = findById(id);
+        Proposal proposal = this.findById(id);
+        User dono = proposal.getVenue().getUser();
+        User user = authenticationService.getAuthenticatedUser();
 
+        if (dono != user) {
+            throw new UserNotFoundException(HttpStatus.FORBIDDEN, "Credenciais inválidas");
+        }
         if (proposal.getStatus() != Status.PENDENTE) {
             throw new ValidationException("Tentando aceitar proposta que não está pendente (" + proposal.getStatus() + ")");
         }
@@ -143,8 +141,13 @@ public class ProposalService {
 
     @Transactional
     public ProposalResponseDTO recusaProposal(Long id) {
-        Proposal proposal = findById(id);
+        Proposal proposal = this.findById(id);
+        User dono = proposal.getVenue().getUser();
+        User user = authenticationService.getAuthenticatedUser();
 
+        if (dono != user) {
+            throw new UserNotFoundException(HttpStatus.FORBIDDEN, "Credenciais inválidas");
+        }
         if (proposal.getStatus() != Status.PENDENTE) {
             throw new ValidationException("Tentando recusar proposta que não está pendente (" + proposal.getStatus() + ")");
         }
@@ -156,8 +159,13 @@ public class ProposalService {
 
     @Transactional
     public ProposalResponseDTO confirmaProposal(Long id) {
-        Proposal proposal = findById(id);
+        Proposal proposal = this.findById(id);
+        User client = proposal.getEvent().getUser();
+        User user = authenticationService.getAuthenticatedUser();
 
+        if (client != user) {
+            throw new UserNotFoundException(HttpStatus.FORBIDDEN, "Credenciais inválidas");
+        }
         if (proposal.getStatus() != Status.ACEITO) {
             throw new ValidationException("Tentando confirmar proposta que não está aceita (" + proposal.getStatus() + ")");
         }
