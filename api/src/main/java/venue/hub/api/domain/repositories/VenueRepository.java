@@ -10,9 +10,13 @@ import venue.hub.api.domain.entities.Event;
 import venue.hub.api.domain.entities.User;
 import venue.hub.api.domain.entities.Venue;
 
+import java.util.List;
+
 public interface VenueRepository extends JpaRepository<Venue, Long> {
 
     Page<Venue> findAll(Specification<Venue> spec, Pageable paginacao);
+
+    List<Venue> findAll(Specification<Venue> spec);
 
     Page<Venue> findByUser(User user, Pageable paginacao);
 
