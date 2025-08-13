@@ -7,10 +7,11 @@ import { CommonModule } from '@angular/common';
 import { VenueResponse } from '../../../interfaces/venue-response';
 import { VenueService } from '../../../services/venue-service';
 import { ProposalDialog } from '../../proposal-dialog/proposal-dialog';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-venue-details',
-  imports: [MatCardModule, MatIcon, CommonModule],
+  imports: [MatCardModule, MatIcon, CommonModule, MatButtonModule],
   templateUrl: './venue-details.html',
   styleUrl: './venue-details.css'
 })

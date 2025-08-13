@@ -14,7 +14,7 @@
 </mat-card>
 
 <!-- Lista de Propostas -->
- <div class="section-title">Propostas recebidas</div>
+ <div class="section-title">Propostas enviadas</div>
 <div *ngIf="proposals.length > 0; else noProposals" class="proposals-container">
 
   <mat-card *ngFor="let proposal of proposals" class="proposal-card">
@@ -40,5 +40,5 @@
 
 <!-- Caso não haja propostas -->
 <ng-template #noProposals>
-  <p>Nenhuma proposta recebida para este evento.</p>
+  <p>Nenhuma proposta enviada para este evento.</p>
 </ng-template>

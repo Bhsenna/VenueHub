@@ -5,6 +5,7 @@ import { Home } from './components/pages/home/home';
 import { EventList } from './components/list/event-list/event-list';
 import { VenueDetails } from './components/pages/venue-details/venue-details';
 import { EventDetails } from './components/pages/event-details/event-details';
+import { ChatbotComponent } from './components/chatbot-component/chatbot-component';
 
 export const routes: Routes = [
     { path: '', component: Login },
@@ -12,6 +13,7 @@ export const routes: Routes = [
     { path: 'home', component: Home },
     { path: 'venues/:id', component: VenueDetails },
     { path: 'events', component: EventList},
-    { path: 'events/:id', component: EventDetails }
+    { path: 'events/:id', component: EventDetails },
+    { path: 'chatbot', component: ChatbotComponent}
 
 ];
