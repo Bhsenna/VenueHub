@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import venue.hub.api.domain.dtos.address.AddressResponseDTO;
-import venue.hub.api.domain.dtos.user.UserResponseDTO;
 import venue.hub.api.domain.dtos.venueadditional.VenueAdditionalResponseDTO;
 
 import java.util.List;
@@ -22,7 +21,6 @@ public class BuscaResponseDTO {
     private double valor;
     private List<VenueAdditionalResponseDTO> additionals;
     private AddressResponseDTO address;
-    private UserResponseDTO user;
-    private boolean ativo;
+    private Double distancia;
 
 }

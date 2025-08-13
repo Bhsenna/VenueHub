@@ -1,11 +1,15 @@
 package venue.hub.api.domain.specification;
 
 import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.Path;
+import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 import venue.hub.api.domain.entities.Venue;
 import venue.hub.api.domain.enums.Estado;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class BuscaSpecification {
 
@@ -79,8 +83,15 @@ public class BuscaSpecification {
     public static Specification<Venue> comAdditional(List<Long> idAdditionals) {
         return ((root, query, builder) -> {
             if (idAdditionals == null || idAdditionals.isEmpty()) return null;
-            Join<Object, Object> additionals = root.join("additionals");
-            return additionals.get("id").get("additionalId").in(idAdditionals);
+
+            Join<Object, Object> join = root.join("additionals");
+
+            Predicate predicate = join.get("id").get("additionalId").in(idAdditionals);
+
+            query.groupBy(root.get("id"));
+            query.having(builder.equal(builder.countDistinct(join.get("id").get("additionalId")), idAdditionals.size()));
+
+            return predicate;
         });
     }
 
