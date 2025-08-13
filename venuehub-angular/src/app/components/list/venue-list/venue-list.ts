@@ -35,7 +35,7 @@ export class VenueList {
       },
       error: (err) => {
         console.error('Erro ao buscar usuário atual:', err);
-        this.loadVenues(); 
+        this.loadVenues();
       }
     });
   }
@@ -44,8 +44,8 @@ export class VenueList {
     this.isLoading = true;
 
     const venueObservable = this.isOwner
-      ? this.venueService.getVenuesByOwner() 
-      : this.venueService.getVenues();       
+      ? this.venueService.getVenuesByOwner()
+      : this.venueService.getVenues();
 
     venueObservable.subscribe({
       next: (data) => {

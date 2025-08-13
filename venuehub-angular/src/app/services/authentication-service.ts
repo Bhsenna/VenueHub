@@ -32,7 +32,7 @@ export class AuthenticationService {
   register(registerData: RegisterRequest) {
     return this.httpClient.post(`${this.apiUrl}/register`, registerData);
   }
-
+  
   logout() {
     localStorage.removeItem('token');
   }

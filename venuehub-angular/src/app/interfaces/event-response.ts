@@ -9,6 +9,6 @@ export interface EventResponse {
   horaFim: string;
   status: string;
   venueId: number;
-  user: any; 
+  user: any;
   additionals: any[];
 }

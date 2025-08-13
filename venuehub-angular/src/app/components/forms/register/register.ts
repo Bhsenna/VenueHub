@@ -56,7 +56,7 @@ export class Register {
     const registerData = this.registerForm.value;
 
     this.authService.register(registerData).subscribe({
-      next: () => {         
+      next: () => {
         this.router.navigate(['/home']);
       },
       error: (err) => {
