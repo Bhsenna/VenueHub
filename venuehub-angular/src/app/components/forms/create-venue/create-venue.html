@@ -42,7 +42,7 @@
         <div class="form-row" formGroupName="address">
           <mat-form-field appearance="outline" class="form-field">
             <mat-label>CEP</mat-label>
-            <input matInput formControlName="cep">
+            <input matInput formControlName="cep" (keyup)="onCepChange($event)">
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="form-field">

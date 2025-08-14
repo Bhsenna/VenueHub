@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { VenueService } from '../../../services/venue-service';
+import { CepService } from '../../../services/cep-service';
 import { Router, RouterModule } from '@angular/router';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCardModule } from '@angular/material/card';
@@ -30,6 +31,7 @@ export class CreateVenue {
   constructor(
     private fb: FormBuilder,
     private venueService: VenueService,
+    private cepService: CepService,
     private router: Router
   ) {
     this.venueForm = this.fb.group({
@@ -50,6 +52,33 @@ export class CreateVenue {
         longitude: [0]
       })
     });
+  }
+
+  onCepChange(event: KeyboardEvent) {
+    let cep = (event.target as HTMLInputElement).value?.replace(/\D/g, '');
+    let validacep = /^[0-9]{8}$/;
+    if (validacep.test(cep)) {
+      let log = this.venueForm.get("address")?.get("logradouro");
+      let bai = this.venueForm.get("address")?.get("bairro");
+      let cid = this.venueForm.get("address")?.get("cidade");
+      let est = this.venueForm.get("address")?.get("estado");
+      log?.setValue("...");
+      bai?.setValue("...");
+      cid?.setValue("...");
+      est?.setValue("...");
+
+      this.cepService.getCepData(cep).subscribe(
+        {
+          next: (v: any) => {
+            log?.setValue(v.logradouro);
+            bai?.setValue(v.bairro);
+            cid?.setValue(v.localidade);
+            est?.setValue(v.uf);
+          },
+          error: (e) => console.log(e)
+        }
+      );
+    }
   }
 
   submit() {
