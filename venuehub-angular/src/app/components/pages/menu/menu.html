@@ -4,7 +4,6 @@
 
     <li><a routerLink="/home" routerLinkActive="active">Home</a></li>
 
-    <li *ngIf="!isOwner"><a routerLink="/home" routerLinkActive="active">Home</a></li>
     <li *ngIf="!isOwner"><a routerLink="/events" routerLinkActive="active">Meus Eventos</a></li>
     <li *ngIf="!isOwner"><a routerLink="/chatbot" routerLinkActive="active">Criar Evento</a></li>
     <li *ngIf="!isOwner"><a routerLink="/proposals" routerLinkActive="active">Minhas propostas</a></li>

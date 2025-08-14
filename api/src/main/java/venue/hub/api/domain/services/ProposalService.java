@@ -104,12 +104,6 @@ public class ProposalService {
                 .map(proposalMapper::toDTO);
     }
 
-    public List<ProposalResponseDTO> getProposalsByEventIdAndStatus(Long id, Status status) {
-        return proposalRepository.findByEventIdAndStatus(id, status).stream()
-                .map(proposalMapper::toDTO)
-                .toList();
-    }
-
 
     @Transactional
     public ProposalResponseDTO updateProposal(Long id, ProposalUpdateDTO updateDTO) {
