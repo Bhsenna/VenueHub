@@ -29,6 +29,7 @@
   padding: 8px 16px;
   border-radius: 8px;
   transition: background 0.2s, color 0.2s;
+  cursor: pointer;
 }
 
 .navbar-links a.active,

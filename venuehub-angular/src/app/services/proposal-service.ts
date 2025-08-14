@@ -22,6 +22,10 @@ export class ProposalService {
     return this.http.get<any[]>(`${this.apiUrl}/event/${eventId}`);
   }
 
+    getProposalsByVenue(venueId: number): Observable<any> {
+    return this.http.get<any[]>(`${this.apiUrl}/venues/${venueId}`);
+  }
+
   acceptProposal(id: number): Observable<any> {
     return this.http.patch<any>(`${this.apiUrl}/aceita/${id}`, {});
   }

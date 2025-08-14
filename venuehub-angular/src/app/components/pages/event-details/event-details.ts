@@ -5,6 +5,7 @@ import { MatCardModule } from '@angular/material/card';
 import { EventService } from '../../../services/event-service';
 import { ProposalService } from '../../../services/proposal-service';
 import { VenueService } from '../../../services/venue-service';
+import { UserService } from '../../../services/user-service';
 
 @Component({
   selector: 'app-event-details',
@@ -13,25 +14,38 @@ import { VenueService } from '../../../services/venue-service';
   templateUrl: './event-details.html',
   styleUrl: './event-details.css'
 })
-export class EventDetails {
+export class EventDetails implements OnInit {
   event: any;
   proposals: any[] = [];
+  isOwner = false;
 
   constructor(
     private route: ActivatedRoute,
     private eventService: EventService,
     private proposalService: ProposalService,
-    private venueService: VenueService
-  ) { }
+    private venueService: VenueService,
+    private userService: UserService
+  ) {}
 
   ngOnInit(): void {
-    const id = Number(this.route.snapshot.paramMap.get('id'))!;
+    const id = Number(this.route.snapshot.paramMap.get('id'));
 
+    this.userService.getCurrentUser().subscribe(user => {
+      this.isOwner = user.role === 'OWNER';
+      this.loadEventAndProposals(id);
+    });
+  }
+
+  private loadEventAndProposals(id: number) {
     this.eventService.getEventDetails(id).subscribe(event => {
       this.event = event;
     });
 
-    this.proposalService.getProposalsByEvent(id).subscribe(async (response) => {
+    const proposals$ = this.isOwner
+      ? this.proposalService.getProposalsByVenue(id)
+      : this.proposalService.getProposalsByEvent(id);
+
+    proposals$.subscribe(async (response) => {
       const proposals = response.currentPageData || [];
 
       for (let proposal of proposals) {
@@ -40,8 +54,8 @@ export class EventDetails {
           proposal.venueName = venue?.nome || 'Nome não encontrado';
         }
       }
+
       this.proposals = proposals;
     });
-
   }
 }
