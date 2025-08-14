@@ -1,0 +1,74 @@
+<div *ngIf="isLoading" class="state-msg">Carregando propostas...</div>
+
+<div *ngIf="!isLoading && proposals.length === 0" class="state-msg">
+  Nenhuma proposta encontrada.
+</div>
+
+<div *ngIf="!isLoading && proposals.length > 0" class="proposals-grid">
+  <mat-card class="proposal-card" *ngFor="let proposal of proposals">
+    <mat-card-header class="card-header">
+      <div class="title-wrap">
+        <mat-card-title class="card-title">
+          {{ proposal.event.nome }} <span class="type">• {{ proposal.event.tipoEvento }}</span>
+        </mat-card-title>
+        <div class="subtitle">
+          {{ proposal.event.dataInicio | date:'dd/MM/yyyy' }}
+          – {{ proposal.event.dataFim | date:'dd/MM/yyyy' }}
+        </div>
+      </div>
+
+      <span
+        class="status-chip"
+        [ngClass]="{
+          'status-accepted': proposal.status === 'ACEITA' || proposal.status === 'ACCEPTED',
+          'status-pending': proposal.status === 'PENDENTE' || proposal.status === 'PENDING',
+          'status-rejected': proposal.status === 'REJEITADA' || proposal.status === 'REJECTED'
+        }"
+        >{{ proposal.status }}</span
+      >
+    </mat-card-header>
+
+    <mat-card-content>
+      <div class="meta">
+        <div class="meta-row">
+          <mat-icon>people</mat-icon>
+          <span>Qtd. pessoas</span>
+          <strong>{{ proposal.event.qtPessoas }}</strong>
+        </div>
+
+        <div class="meta-row">
+          <mat-icon>schedule</mat-icon>
+          <span>Horário</span>
+          <strong>{{ proposal.event.horaInicio }} – {{ proposal.event.horaFim }}</strong>
+        </div>
+
+        <div class="meta-row">
+          <mat-icon>attach_money</mat-icon>
+          <span>Valor proposto</span>
+          <strong>{{ proposal.valor | currency:'BRL':'symbol':'1.2-2' }}</strong>
+        </div>
+
+        <div class="meta-row">
+          <mat-icon>event</mat-icon>
+          <span>Criação</span>
+          <strong>{{ proposal.dataCriacao | date:'dd/MM/yyyy HH:mm' }}</strong>
+        </div>
+
+        <div class="meta-row">
+          <mat-icon>domain</mat-icon>
+          <span>Local</span>
+          <strong>{{ proposal.venue?.nome || '—' }}</strong>
+        </div>
+      </div>
+    </mat-card-content>
+
+    <mat-card-actions align="end" *ngIf="proposal.status === 'PENDENTE' || proposal.status === 'PENDING'">
+      <button mat-raised-button color="primary" (click)="acceptProposal(proposal.id)">
+        Aceitar
+      </button>
+      <button mat-stroked-button color="warn" (click)="rejectProposal(proposal.id)">
+        Recusar
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>

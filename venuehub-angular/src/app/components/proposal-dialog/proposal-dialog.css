@@ -1,0 +1,15 @@
+.full-width {
+  width: 100%;
+}
+
+mat-dialog-content {
+  margin-top: 10px;
+}
+
+mat-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+

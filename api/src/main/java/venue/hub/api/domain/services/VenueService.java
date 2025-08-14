@@ -84,6 +84,11 @@ public class VenueService {
         return venueMapper.toDTO(venue);
     }
 
+    public Page<VenueResponseDTO> getAll(Pageable paginacao) {
+        return venueRepository.findAll(paginacao)
+                .map(venueMapper::toDTO);
+    }
+
     public Page<VenueResponseDTO> getAllVenues(Specification<Venue> spec, Pageable paginacao) {
         User user = authenticationService.getAuthenticatedUser();
 
@@ -101,10 +106,10 @@ public class VenueService {
 
     public VenueResponseDTO getVenueById(Long id) {
         var venue = this.findById(id);
-        var user = authenticationService.getAuthenticatedUser();
-        if (!venue.getUser().equals(user) && user.getRole() != UserRole.ADMIN) {
-            throw new AccessDeniedException("Usuário autenticado não é dono da Venue (" + venue.getUser().getLogin() + ")");
-        }
+//        var user = authenticationService.getAuthenticatedUser();
+////        if (!venue.getUser().equals(user) && user.getRole() != UserRole.ADMIN) {
+////            throw new AccessDeniedException("Usuário autenticado não é dono da Venue (" + venue.getUser().getLogin() + ")");
+////        }
 
         return venueMapper.toDTO(venue);
     }

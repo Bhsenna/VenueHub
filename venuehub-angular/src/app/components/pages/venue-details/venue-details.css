@@ -1,0 +1,32 @@
+.venue-details {
+  max-width: 900px;
+  margin: auto;
+  padding: 24px;
+}
+
+.venue-card {
+  padding-bottom: 16px;
+}
+
+.venue-title {
+  color: #3f51b5;
+  font-weight: bold;
+}
+
+.venue-description {
+  margin: 16px 0;
+  font-size: 1rem;
+  color: #444;
+}
+
+.venue-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 6px 0;
+  color: #333;
+}
+
+mat-icon {
+  color: #3f51b5;
+}

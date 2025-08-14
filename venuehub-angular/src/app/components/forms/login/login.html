@@ -1,0 +1,30 @@
+<div class="form-wrapper">
+
+    <div class="form-container">
+
+        <h2 class="form-title">Login</h2>
+
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+            <mat-form-field class="full-width">
+                <mat-label>Login</mat-label>
+                <input matInput formControlName="login" required>
+
+            </mat-form-field>
+
+            <mat-form-field class="full-width">
+                <mat-label>Senha</mat-label>
+                <input type="password" matInput formControlName="senha" required>
+            </mat-form-field>
+
+            <button mat-raised-button color="primary" type="submit">
+                Login
+            </button>
+
+            <p class="below-button-text">
+                Não possui uma conta? <a routerLink="/register">Cadastre-se</a>
+            </p>
+        </form>
+
+    </div>
+
+</div>

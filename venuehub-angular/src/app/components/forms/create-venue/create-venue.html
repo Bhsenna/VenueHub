@@ -1,0 +1,92 @@
+<form [formGroup]="venueForm" (ngSubmit)="submit()" class="venue-form">
+  <mat-card class="card-container">
+    <mat-card-title class="card-title">Criar Novo Local</mat-card-title>
+    <mat-card-content>
+
+      <!-- Dados do Venue -->
+      <div class="section">
+        <h3 class="section-title">Informações do Local</h3>
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Nome</mat-label>
+            <input matInput formControlName="nome">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Capacidade</mat-label>
+            <input matInput type="number" formControlName="capacidade">
+          </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Descrição</mat-label>
+          <textarea matInput formControlName="descricao" rows="3"></textarea>
+        </mat-form-field>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Telefone</mat-label>
+            <input matInput formControlName="telefone" placeholder="XX XXXXX-XXXX">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Valor</mat-label>
+            <input matInput type="number" formControlName="valor">
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- Endereço -->
+      <div class="section">
+        <h3 class="section-title">Endereço</h3>
+        <div class="form-row" formGroupName="address">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>CEP</mat-label>
+            <input matInput formControlName="cep" (keyup)="onCepChange($event)">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Logradouro</mat-label>
+            <input matInput formControlName="logradouro">
+          </mat-form-field>
+        </div>
+
+        <div class="form-row" formGroupName="address">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Número</mat-label>
+            <input matInput type="number" formControlName="numero">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Complemento</mat-label>
+            <input matInput formControlName="complemento">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Bairro</mat-label>
+            <input matInput formControlName="bairro">
+          </mat-form-field>
+        </div>
+
+        <div class="form-row" formGroupName="address">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Cidade</mat-label>
+            <input matInput formControlName="cidade">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Estado</mat-label>
+            <input matInput formControlName="estado">
+          </mat-form-field>
+        </div>
+      </div>
+
+    </mat-card-content>
+
+    <mat-card-actions align="end">
+      <button mat-raised-button color="primary" [disabled]="isSubmitting">
+        Criar Local
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</form>

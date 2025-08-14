@@ -1,0 +1,41 @@
+<div class="venue-details" *ngIf="venue">
+  <mat-card class="venue-card">
+    <img mat-card-image src="https://placehold.co/800x300?text={{ venue.nome }}" alt="{{ venue.nome }}" />
+
+    <mat-card-header>
+      <mat-card-title class="venue-title">{{ venue.nome }}</mat-card-title>
+      <mat-card-subtitle>
+        {{ venue.address.cidade }}, {{ venue.address.estado }}
+      </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <p class="venue-description">{{ venue.descricao }}</p>
+
+      <div class="venue-info">
+        <mat-icon>people</mat-icon>
+        <span><strong>Capacidade:</strong> {{ venue.capacidade }} pessoas</span>
+      </div>
+      <div class="venue-info">
+        <mat-icon>attach_money</mat-icon>
+        <span><strong>Valor:</strong> R$ {{ venue.valor }}</span>
+      </div>
+      <div class="venue-info">
+        <mat-icon>phone</mat-icon>
+        <span>{{ venue.telefone }}</span>
+      </div>
+    </mat-card-content>
+
+    <mat-card-actions>
+      <button *ngIf="!isOwner" mat-raised-button color="primary" (click)="openProposalDialog()">
+        Fazer proposta
+      </button>
+
+      <button *ngIf="isOwner" mat-raised-button color="primary" [routerLink]="['/venues', venue.id, 'calendar']">
+        Ver calendario
+      </button>
+
+    </mat-card-actions>
+  </mat-card>
+
+</div>

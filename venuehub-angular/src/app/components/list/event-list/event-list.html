@@ -1,0 +1,29 @@
+<div class="event-list">
+  <mat-card 
+  class="event-card" 
+  *ngFor="let event of events"
+   (click)="goToDetails(event.id)">
+
+    <mat-card-header>
+      <mat-card-title>{{ event.nome }}</mat-card-title>
+       <mat-card-subtitle>
+        {{ event.tipoEvento }}
+      </mat-card-subtitle>
+      <mat-card-subtitle>
+        {{ event.dataInicio | date:'dd/MM/yyyy' }} - {{ event.dataFim | date:'dd/MM/yyyy' }}
+      </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <p><mat-icon>group</mat-icon> {{ event.qtPessoas }} pessoas</p>
+      <p><mat-icon>schedule</mat-icon> {{ event.horaInicio }} - {{ event.horaFim }}</p>
+
+      <div *ngIf="event.additionals?.length">
+        <strong>Adicionais:</strong>
+        <ul>
+          <li *ngFor="let add of event.additionals">{{ add.nome }} - R$ {{ add.valor }}</li>
+        </ul>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

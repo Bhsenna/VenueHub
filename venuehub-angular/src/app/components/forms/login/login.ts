@@ -1,19 +1,21 @@
 import { Component } from '@angular/core';
-import { AuthenticationService } from '../../services/authentication-service';
+import { AuthenticationService } from '../../../services/authentication-service';
 import { Form, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-login',
   imports: [
-     ReactiveFormsModule,
-  CommonModule,
-  MatFormFieldModule,
-  MatInputModule,
-  MatButtonModule,
+    ReactiveFormsModule,
+    CommonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    RouterModule
   ],
   templateUrl: './login.html',
   styleUrl: './login.css'
@@ -23,6 +25,7 @@ export class Login {
   loginForm: FormGroup;
 
   constructor(
+    private router: Router,
     private formBuilder: FormBuilder,
     private authenticationService: AuthenticationService) {
     this.loginForm = this.formBuilder.group({
@@ -31,15 +34,17 @@ export class Login {
     });
   }
 
-  onSubmit(login: string, senha: string) {
+  onSubmit() {
 
     if (this.loginForm.invalid) {
       return;
     }
 
+    const { login, senha } = this.loginForm.value;
+
     this.authenticationService.login(login, senha).subscribe({
-      next: (response) => {
-        console.log('Login successful', response);
+      next: () => {
+        this.router.navigate(['/home']);
       },
       error: (error) => {
         console.error('Login failed', error);
