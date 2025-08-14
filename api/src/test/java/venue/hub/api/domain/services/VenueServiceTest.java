@@ -85,9 +85,9 @@ public class VenueServiceTest {
         addressRequestDTO = new AddressRequestDTO("8889999", "Logradouro", 123, "complemento", "Bairro", "Cidade", Estado.SC, -1.0, -1.0);
         AddressResponseDTO addressResponseDTO = new AddressResponseDTO(1L, "8889999", "Logradouro", 123, "complemento", "Bairro", "Cidade", Estado.SC, -1.0, -1.0);
 
-        ownerUser = new User(1L, "Nome", "Sobrenome", "login@test.com", "Senha@teste", UserRole.CLIENT, address, true);
+        ownerUser = new User(1L, "Nome", "Sobrenome", "login@test.com", "Senha@teste", UserRole.OWNER, address, true);
 
-        adminUser = new User(2L, "Admin", "Sobrenome", "admin@test.com", "Senha@admin", UserRole.OWNER, address, true);
+        adminUser = new User(2L, "Admin", "Sobrenome", "admin@test.com", "Senha@admin", UserRole.ADMIN, address, true);
 
         venue = new Venue(1L, "Nome", 123, "Descrição", "47 9999-0000", 1000, address, ownerUser, new ArrayList<>(), true);
 
@@ -105,7 +105,7 @@ public class VenueServiceTest {
 
     @Test
     @DisplayName("Deve criar uma nova venue com sucesso")
-    public void createVenue_shouldCreateNewVenueWhenValidRequest() {
+    public void createVenue_shouldCreateNewVenue_whenValidRequest() {
         // Arrange
         when(authenticationService.getAuthenticatedUser()).thenReturn(ownerUser);
         when(venueMapper.toEntity(any(VenueRequestDTO.class))).thenReturn(venue);
@@ -203,7 +203,7 @@ public class VenueServiceTest {
     public void getVenueById_shouldFindVenue_whenUserIsAdmin() {
         // Arrange
         when(venueRepository.findById(anyLong())).thenReturn(Optional.of(venue));
-        when(authenticationService.getAuthenticatedUser()).thenReturn(ownerUser);
+        when(authenticationService.getAuthenticatedUser()).thenReturn(adminUser);
         when(venueMapper.toDTO(any(Venue.class))).thenReturn(venueResponseDTO);
 
         // Act
