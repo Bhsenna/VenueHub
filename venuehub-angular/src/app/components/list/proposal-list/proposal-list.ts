@@ -4,6 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { ProposalService } from '../../../services/proposal-service';
 import { MatIconModule } from '@angular/material/icon';
+import { UserService } from '../../../services/user-service';
 
 @Component({
   selector: 'app-proposal-list',
@@ -15,11 +16,16 @@ import { MatIconModule } from '@angular/material/icon';
 export class ProposalList {
   proposals: any[] = [];
   isLoading = false;
+  isOwner = false;
 
-  constructor(private proposalService: ProposalService) {}
+  constructor(private proposalService: ProposalService, private userService: UserService) {}
 
   ngOnInit(): void {
     this.loadProposals();
+
+     this.userService.getCurrentUser().subscribe(user => {
+        this.isOwner = user.role === 'OWNER';
+      });
   }
 
   loadProposals(): void {

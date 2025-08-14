@@ -62,7 +62,7 @@
       </div>
     </mat-card-content>
 
-    <mat-card-actions align="end" *ngIf="proposal.status === 'PENDENTE' || proposal.status === 'PENDING'">
+    <mat-card-actions align="end" *ngIf="(proposal.status === 'PENDENTE' || proposal.status === 'PENDING') && isOwner">
       <button mat-raised-button color="primary" (click)="acceptProposal(proposal.id)">
         Aceitar
       </button>
