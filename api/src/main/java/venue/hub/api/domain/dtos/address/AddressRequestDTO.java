@@ -35,10 +35,4 @@ public class AddressRequestDTO {
     @NotNull
     private Estado estado;
 
-    @NotNull
-    private Double latitude;
-
-    @NotNull
-    private Double longitude;
-
 }

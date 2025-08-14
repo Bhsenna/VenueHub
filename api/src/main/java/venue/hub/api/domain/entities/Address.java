@@ -30,6 +30,29 @@ public class Address {
     private Double latitude;
     private Double longitude;
 
+    @Transient
+    private Coordenada coordenada;
+
+    public Coordenada getCoordenada() {
+        if (this.coordenada == null) {
+            this.coordenada = new Coordenada(this.latitude, this.longitude);
+        }
+        return this.coordenada;
+    }
+
+    public void setCoordenada(Coordenada coordenada) {
+        this.coordenada = coordenada;
+        this.latitude = coordenada.getLatitude();
+        this.longitude = coordenada.getLongitude();
+    }
+
+    @Getter
+    @AllArgsConstructor
+    public static class Coordenada {
+        private Double latitude;
+        private Double longitude;
+    }
+
     public void update(AddressUpdateDTO address) {
         if (address.getCep() != null && !address.getCep().isBlank()) {
             this.cep = address.getCep();
