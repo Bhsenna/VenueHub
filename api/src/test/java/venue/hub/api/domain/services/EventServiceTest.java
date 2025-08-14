@@ -75,8 +75,8 @@ public class EventServiceTest {
 
     @Before
     public void setUp() {
-        address = new Address(1L, "8889999", "Logradouro", 123, "complemento", "Bairro", "Cidade", Estado.SC, -1.0, -1.0);
-        addressRequestDTO = new AddressRequestDTO("8889999", "Logradouro", 123, "complemento", "Bairro", "Cidade", Estado.SC, -1.0, -1.0);
+        address = new Address(1L, "8889999", "Logradouro", 123, "complemento", "Bairro", "Cidade", Estado.SC, -1.0, -1.0, null);
+        addressRequestDTO = new AddressRequestDTO("8889999", "Logradouro", 123, "complemento", "Bairro", "Cidade", Estado.SC);
         AddressResponseDTO addressResponseDTO = new AddressResponseDTO(1L, "8889999", "Logradouro", 123, "complemento", "Bairro", "Cidade", Estado.SC, -1.0, -1.0);
 
         clientUser = new User(1L, "Nome", "Sobrenome", "login@test.com", "Senha@teste", UserRole.CLIENT, address, true);

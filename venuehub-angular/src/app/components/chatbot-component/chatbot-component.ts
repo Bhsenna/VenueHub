@@ -5,7 +5,7 @@ declare var Typebot: any;
 @Component({
   selector: 'app-chatbot',
   template: `
-    <typebot-standard style="width: 100%; height: 600px;"></typebot-standard>
+    <typebot-standard style="width: 100%; height: 93.2%;"></typebot-standard>
   `,
    schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

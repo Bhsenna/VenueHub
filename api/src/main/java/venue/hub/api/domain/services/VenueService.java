@@ -106,10 +106,6 @@ public class VenueService {
 
     public VenueResponseDTO getVenueById(Long id) {
         var venue = this.findById(id);
-//        var user = authenticationService.getAuthenticatedUser();
-////        if (!venue.getUser().equals(user) && user.getRole() != UserRole.ADMIN) {
-////            throw new AccessDeniedException("Usuário autenticado não é dono da Venue (" + venue.getUser().getLogin() + ")");
-////        }
 
         return venueMapper.toDTO(venue);
     }

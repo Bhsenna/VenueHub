@@ -77,7 +77,7 @@ public class LoginServiceTest {
 
     @Before
     public void setUp() {
-        address = new Address(1L, "88760430", "Rua de Cima", 123, null, "Centro", "Florianópolis", Estado.SC, -1.0, -1.0);
+        address = new Address(1L, "88760430", "Rua de Cima", 123, null, "Centro", "Florianópolis", Estado.SC, -1.0, -1.0, null);
         user = new User(1L, "John", "Doe", "johndoe@email.com", "12345", UserRole.ADMIN, address, true);
         addressResponseDTO = new AddressResponseDTO(address.getId(), address.getCep(), address.getLogradouro(), address.getNumero(), address.getComplemento(), address.getBairro(), address.getCidade(), address.getEstado(), address.getLatitude(), address.getLongitude());
         userResponseDTO = new UserResponseDTO(user.getId(), user.getNome(), user.getSobrenome(), user.getLogin(), addressResponseDTO);
@@ -86,7 +86,7 @@ public class LoginServiceTest {
     @Test
     public void createUser_shouldCreateUserSuccessfully() {
         // Arrange
-        AddressRequestDTO addressRequestDTO = new AddressRequestDTO("88760430", "Rua de Cima", 123, null, "Centro", "Florianópolis", Estado.SC, -1.0, -1.0);
+        AddressRequestDTO addressRequestDTO = new AddressRequestDTO("88760430", "Rua de Cima", 123, null, "Centro", "Florianópolis", Estado.SC);
         UserRequestDTO requestDTO = new UserRequestDTO("John", "Doe", "johndoe@email.com", "12345", UserRole.ADMIN, addressRequestDTO);
 
         UserValidator mockUserValidator1 = mock(UserValidator.class);

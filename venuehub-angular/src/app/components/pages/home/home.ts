@@ -2,10 +2,11 @@ import { Component } from '@angular/core';
 import { VenueList } from "../../list/venue-list/venue-list";
 import { UserService } from '../../../services/user-service';
 import { CommonModule } from '@angular/common';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
   selector: 'app-home',
-  imports: [VenueList, CommonModule],
+  imports: [VenueList, CommonModule, MatCardModule],
   templateUrl: './home.html',
   styleUrl: './home.css'
 })

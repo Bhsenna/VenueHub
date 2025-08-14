@@ -81,8 +81,8 @@ public class VenueServiceTest {
 
     @Before
     public void setUp() {
-        address = new Address(1L, "8889999", "Logradouro", 123, "complemento", "Bairro", "Cidade", Estado.SC, -1.0, -1.0);
-        addressRequestDTO = new AddressRequestDTO("8889999", "Logradouro", 123, "complemento", "Bairro", "Cidade", Estado.SC, -1.0, -1.0);
+        address = new Address(1L, "8889999", "Logradouro", 123, "complemento", "Bairro", "Cidade", Estado.SC, -1.0, -1.0, null);
+        addressRequestDTO = new AddressRequestDTO("8889999", "Logradouro", 123, "complemento", "Bairro", "Cidade", Estado.SC);
         AddressResponseDTO addressResponseDTO = new AddressResponseDTO(1L, "8889999", "Logradouro", 123, "complemento", "Bairro", "Cidade", Estado.SC, -1.0, -1.0);
 
         ownerUser = new User(1L, "Nome", "Sobrenome", "login@test.com", "Senha@teste", UserRole.OWNER, address, true);
@@ -183,7 +183,6 @@ public class VenueServiceTest {
     public void getVenueById_shouldFindVenue_whenUserIsOwner() {
         // Arrange
         when(venueRepository.findById(anyLong())).thenReturn(Optional.of(venue));
-        when(authenticationService.getAuthenticatedUser()).thenReturn(ownerUser);
         when(venueMapper.toDTO(any(Venue.class))).thenReturn(venueResponseDTO);
 
         // Act
@@ -194,50 +193,9 @@ public class VenueServiceTest {
         assertThat(result.getId()).isEqualTo(venue.getId());
 
         verify(venueRepository).findById(1L);
-        verify(authenticationService).getAuthenticatedUser();
         verify(venueMapper).toDTO(venue);
     }
 
-    @Test
-    @DisplayName("Deve buscar uma venue pelo ID com sucesso (admin)")
-    public void getVenueById_shouldFindVenue_whenUserIsAdmin() {
-        // Arrange
-        when(venueRepository.findById(anyLong())).thenReturn(Optional.of(venue));
-        when(authenticationService.getAuthenticatedUser()).thenReturn(adminUser);
-        when(venueMapper.toDTO(any(Venue.class))).thenReturn(venueResponseDTO);
-
-        // Act
-        VenueResponseDTO result = venueService.getVenueById(1L);
-
-        // Assert
-        assertThat(result).isNotNull();
-        assertThat(result.getId()).isEqualTo(venue.getId());
-
-        verify(venueRepository).findById(1L);
-        verify(authenticationService).getAuthenticatedUser();
-        verify(venueMapper).toDTO(venue);
-    }
-
-    @Test
-    @DisplayName("Deve lançar AccessDeniedException ao buscar venue de outro usuário")
-    public void getVenueById_shouldThrowAccessDeniedException_whenUserIsNotOwnerOrAdmin() {
-        // Arrange
-        User anotherUser = new User();
-        anotherUser.setId(3L);
-        anotherUser.setRole(UserRole.CLIENT);
-
-        when(venueRepository.findById(anyLong())).thenReturn(Optional.of(venue));
-        when(authenticationService.getAuthenticatedUser()).thenReturn(anotherUser);
-
-        // Act & Assert
-        assertThatThrownBy(() -> venueService.getVenueById(1L))
-                .isInstanceOf(AccessDeniedException.class)
-                .hasMessageContaining("Usuário autenticado não é dono da Venue");
-
-        verify(venueRepository).findById(1L);
-        verify(authenticationService).getAuthenticatedUser();
-        verify(venueMapper, never()).toDTO(any(Venue.class));
-    }
 
     @Test
     @DisplayName("Deve atualizar uma venue com sucesso (dono)")
